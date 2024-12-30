@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Shop" ALTER COLUMN "size" SET DEFAULT 0.0007;

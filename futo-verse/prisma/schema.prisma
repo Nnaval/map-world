@@ -1,0 +1,154 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           Int          @id @default(autoincrement())
+  email        String       @unique
+  password     String
+  username     String       @unique
+  name         String?
+  picture      String?
+  status       String? // Nullable for users without status
+  levelId      Int? // Foreign key to Level (nullable)
+  departmentId Int? // Foreign key to Department (nullable)
+  about        String? // Nullable for user about
+  longitude    Float?
+  latitude     Float?
+  kingdom      String?
+  bio          String? // Use array of strings for titles
+  shops        Shop[] // Relation to shops
+  orders       Order[] // Relation to orders
+  statuses     UserStatus[] // Relation to user's personal statuses
+
+  department Department? @relation(fields: [departmentId], references: [id]) // Relation to Department
+  level      Level?      @relation(fields: [levelId], references: [id]) // Relation to Level
+  posts      Post[] // Relation to posts
+  comments   Comment[] // User can have many comments
+}
+
+model Post {
+  id        String    @id @default(cuid()) // Unique identifier for post
+  authorId  String // Foreign key to the User model, now using Int for ID
+  text      String? // Text content of the status
+  media     String? // URL for images/videos associated with the status
+  createdAt DateTime  @default(now())
+  content   Json? // JSONB field for dynamic content (e.g., comments, metadata)
+  updatedAt DateTime  @updatedAt
+  comments  Comment[] // A post can have many comments
+
+  // Relations
+  author User @relation(fields: [authorId], references: [username], onDelete: Cascade) // Now referencing `id` of User
+}
+
+model Comment {
+  id              String    @id @default(cuid()) // Unique ID for the comment
+  text            String // The comment content
+  postId          String // Foreign key to Post
+  post            Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId        String // Foreign key to User (comment's author)
+  author          User      @relation(fields: [authorId], references: [username], onDelete: Cascade)
+  parentCommentId String? // Foreign key to the parent comment (nullable)
+  parentComment   Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
+  createdAt       DateTime  @default(now()) // Timestamp of when the comment was created
+  replies         Comment[] @relation("CommentReplies") // A comment can have multiple replies
+}
+
+model Shop {
+  id             Int           @id
+  name           String        @unique
+  description    String
+  longitude      Float
+  latitude       Float
+  kingdom        String
+  size           Float         @default(0.0007)
+  category       String
+  image          String?
+  userId         Int
+  user           User          @relation(fields: [userId], references: [id])
+  shopItems      ShopItem[]
+  orders         Order[] // Relation to orders made from this shop
+  requestedOrder String? // Used for tracking orders sent/requested
+  statuses       StoreStatus[] // Relation to store statuses
+}
+
+model UserStatus {
+  id        Int      @id @default(autoincrement())
+  content   String? // Text content of the status
+  media     String? // URL for images/videos associated with the status
+  createdAt DateTime @default(now())
+  expiresAt DateTime // Expiry time for the status
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model StoreStatus {
+  id        Int      @id @default(autoincrement())
+  content   String? // Text content of the status
+  media     String? // URL for images/videos associated with the status
+  createdAt DateTime @default(now())
+  expiresAt DateTime // Expiry time for the status
+  shopId    String
+  shop      Shop     @relation(fields: [shopId], references: [name])
+}
+
+model Department {
+  id    Int    @id @default(autoincrement())
+  name  String @unique // Ensure department names are unique
+  users User[]
+}
+
+model Level {
+  id    Int    @id @default(autoincrement())
+  name  String @unique // Ensure level names are unique
+  users User[]
+}
+
+model ShopItem {
+  id       Int     @id @default(autoincrement())
+  name     String
+  price    Float
+  image    String
+  tag      String?
+  quantity Int?    @default(1)
+  shopId   Int
+  shop     Shop    @relation(fields: [shopId], references: [id])
+}
+
+model Order {
+  id          Int         @id @default(autoincrement())
+  orderId     String      @unique
+  totalAmount Float
+  orderDate   DateTime
+  status      String // e.g., 'Pending', 'Processing', 'Completed', etc.
+  comment     String?
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id])
+  shopId      String
+  shop        Shop        @relation(fields: [shopId], references: [name])
+  items       OrderItem[]
+}
+
+model OrderItem {
+  id       Int    @id @default(autoincrement())
+  name     String
+  quantity Int
+  price    Float
+  orderId  Int
+  order    Order  @relation(fields: [orderId], references: [id])
+}
+
+model Place {
+  id        Int     @id @default(autoincrement())
+  email     String?
+  userName  String?
+  placeName String
+  longitude Float
+  latitude  Float
+  createdAt String?
+}

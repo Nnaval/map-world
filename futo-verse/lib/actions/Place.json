@@ -1,0 +1,218 @@
+[
+  {
+    "id": 3,
+    "email": "fattmane5@gmail.com",
+    "userName": "OKEKE EMMANUEL ARINZECHUKWU",
+    "placeName": "Favoured Lodge , Eziobodo",
+    "longitude": 7.0080911,
+    "latitude": 5.391744,
+    "createdAt": "2024-10-17 04:24:19.266"
+  },
+  {
+    "id": 4,
+    "email": "fattmane5@gmail.com",
+    "userName": "Emm.js",
+    "placeName": "De Buch Lodge, Umuchima",
+    "longitude": 7.0104727,
+    "latitude": 5.3918341,
+    "createdAt": "2024-10-17 04:25:15.276"
+  },
+  {
+    "id": 5,
+    "email": "nwaigwenzubeisaiah@gmail.com",
+    "userName": "Hjjgddd",
+    "placeName": "Destiny guarantee hostel eziobodo ",
+    "longitude": 6.9995305,
+    "latitude": 5.3801361,
+    "createdAt": "2024-10-17 05:14:07.074"
+  },
+  {
+    "id": 6,
+    "email": "Prosperarinze4@gmail.com",
+    "userName": "Ariwa",
+    "placeName": "Favour Lodge, Eziobodo ",
+    "longitude": 6.9912233,
+    "latitude": 5.3851125,
+    "createdAt": "2024-10-17 06:40:36.179"
+  },
+  {
+    "id": 7,
+    "email": "Ikpejoan33@gmail.com",
+    "userName": "Joan",
+    "placeName": "Philo Extension Umuchima",
+    "longitude": 7.0036486,
+    "latitude": 5.3927702,
+    "createdAt": "2024-10-17 06:51:30.538"
+  },
+  {
+    "id": 8,
+    "email": "yemisiesther03@gmail.com",
+    "userName": "Esther",
+    "placeName": "07039850369 JOJ Lodge Eziobodo ",
+    "longitude": 7.0036486,
+    "latitude": 5.3927702,
+    "createdAt": "2024-10-17 06:53:02.526"
+  },
+  {
+    "id": 9,
+    "email": "nwaigwenzubeisaiah@gmail.com",
+    "userName": "Gjkssjb",
+    "placeName": "Computer science lab",
+    "longitude": 6.994459,
+    "latitude": 5.3826373,
+    "createdAt": "2024-10-17 07:45:11.497"
+  },
+  {
+    "id": 10,
+    "email": "freshmorganfx@gmail.com",
+    "userName": "Jsuahsgb",
+    "placeName": "Computer science lab",
+    "longitude": 6.9945128,
+    "latitude": 5.3823516,
+    "createdAt": "2024-10-17 07:47:38.879"
+  },
+  {
+    "id": 11,
+    "email": "mauricenwaozuzu12@gmail.com",
+    "userName": "Chimaur ",
+    "placeName": "Lindon lodge, FUTO",
+    "longitude": 7.0096942,
+    "latitude": 5.3920506,
+    "createdAt": "2024-10-17 07:55:08.622"
+  },
+  {
+    "id": 12,
+    "email": "mauricenwaozuzu12@gmail.com",
+    "userName": "Chimaur ",
+    "placeName": "Lindon lodge,Umuchima",
+    "longitude": 7.0095578,
+    "latitude": 5.3919862,
+    "createdAt": "2024-10-17 07:56:04.089"
+  },
+  {
+    "id": 13,
+    "email": "fattmane5@gmail.com",
+    "userName": "Emma.js",
+    "placeName": "Workshop 2",
+    "longitude": 7.002715,
+    "latitude": 5.3732483,
+    "createdAt": "2024-10-17 08:32:26.038"
+  },
+  {
+    "id": 14,
+    "email": "eokeke320@gmail.com",
+    "userName": "Hdhdb",
+    "placeName": "Workshop 2",
+    "longitude": 6.9826861,
+    "latitude": 5.4496319,
+    "createdAt": "2024-10-17 09:18:59.916"
+  },
+  {
+    "id": 15,
+    "email": "fattmane5@gmail.com",
+    "userName": "Emma.js",
+    "placeName": "UCC",
+    "longitude": 6.9943753,
+    "latitude": 5.3870527,
+    "createdAt": "2024-10-17 10:11:30.319"
+  },
+  {
+    "id": 16,
+    "email": "fattmane5@gmail.com",
+    "userName": "Emma.js",
+    "placeName": "UCC",
+    "longitude": 6.9943753,
+    "latitude": 5.3870527,
+    "createdAt": "2024-10-17 10:11:50.895"
+  },
+  {
+    "id": 17,
+    "email": "fattmane5@gmail.com",
+    "userName": "Emma.js",
+    "placeName": "Isman Junction ",
+    "longitude": 7.0095943,
+    "latitude": 5.3977851,
+    "createdAt": "2024-10-17 13:53:55.584"
+  },
+  {
+    "id": 18,
+    "email": "yemisiesther03@gmail.com",
+    "userName": "Esther",
+    "placeName": "JOJ Lodge, Eziobodo ",
+    "longitude": 6.9989469,
+    "latitude": 5.3749502,
+    "createdAt": "2024-10-17 19:22:41.053"
+  },
+  {
+    "id": 19,
+    "email": "nwaigwenzubeisaiah@gmail.com",
+    "userName": "Moragn",
+    "placeName": "St Benedict hostel",
+    "longitude": 6.9988565,
+    "latitude": 5.3781827,
+    "createdAt": "2024-10-18 07:56:10.628"
+  },
+  {
+    "id": 20,
+    "email": "nwaigwenzubeisaiah@gmail.com",
+    "userName": "Morgan ",
+    "placeName": "Matilda villa ",
+    "longitude": 6.9985773,
+    "latitude": 5.3777159,
+    "createdAt": "2024-10-18 07:57:26.214"
+  },
+  {
+    "id": 21,
+    "email": "Prosperarinze4@gmail.com",
+    "userName": "Ariwa",
+    "placeName": "Workshop 2",
+    "longitude": 6.9955887,
+    "latitude": 5.3821376,
+    "createdAt": "2024-10-18 12:09:49.415"
+  },
+  {
+    "id": 22,
+    "email": "ojomumayowa@gmail.com",
+    "userName": "Mayor",
+    "placeName": "Ikole",
+    "longitude": 5.5091784,
+    "latitude": 7.7944601,
+    "createdAt": "2024-10-18 17:38:43.577"
+  },
+  {
+    "id": 23,
+    "email": "",
+    "userName": "",
+    "placeName": "Koko mansion ",
+    "longitude": 7.0023052,
+    "latitude": 5.3947358,
+    "createdAt": "2024-10-18 21:52:04.864"
+  },
+  {
+    "id": 24,
+    "email": "ethanmichael633@gmail.com",
+    "userName": "Ethan",
+    "placeName": "Presidential, Eziobodo",
+    "longitude": 6.9996185,
+    "latitude": 5.3837163,
+    "createdAt": "2024-10-19 01:48:37.386"
+  },
+  {
+    "id": 25,
+    "email": "yemisiesther03@gmail.com",
+    "userName": "Yemisi",
+    "placeName": "EEE lecture hall 2",
+    "longitude": 6.9994062,
+    "latitude": 5.383648,
+    "createdAt": "2024-10-19 09:38:54.527"
+  },
+  {
+    "id": 26,
+    "email": "queenethcanice2004@gmail.com",
+    "userName": "Queenhuji",
+    "placeName": "Ugochinyere estate, Umuchima ",
+    "longitude": 7.0051939,
+    "latitude": 5.3918624,
+    "createdAt": "2024-10-19 17:11:27.819"
+  }
+]
