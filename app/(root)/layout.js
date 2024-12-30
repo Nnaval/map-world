@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import "@styles/globals.css";
+import ButtomNav from "@components/ButtomNav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +16,9 @@ export default function RootLayout({ children }) {
         {/* <Provider>
           <LocationProvider>
             <CesiumViewerProvider> */}
-        <main className="">
+        <main className="bg-light">
           <div className="">{children}</div>
+          <ButtomNav />
         </main>
         {/* <Bottombar />
               <CesiumMapB />
