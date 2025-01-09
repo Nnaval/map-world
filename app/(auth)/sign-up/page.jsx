@@ -1,7 +1,42 @@
+"use client"
 import React from 'react'
+import {useRouter} from "next/navigation"
 import { AiOutlineEye } from "react-icons/ai";
+import { createUser } from 'lib/actions/user.prisma';
+import { signIn } from 'auth';
 
-const page = () => {
+const SignUp = () => {
+  const router = useRouter();
+
+  const [form, setForm] = usestate({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    fullName: '',
+    username: ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm({...form, [name]: value });
+  };
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Registering Value", form);
+    const success = createUser(form);
+    if (success) {
+      router.push('/login'); 
+  }
+  }
+
+  const handleGoogle = async () => {
+    console.log("Google Sign-In Function was triggered");
+    await signIn('google', {
+      redirect: "/"
+    })
+    
+  }
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
     <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
@@ -17,6 +52,8 @@ const page = () => {
             type="text"
             id="fullName"
             name='fullName'
+            value={form.fullName}
+            onChange={handleChange}
             className="w-full px-4 py-2 border cursor-pointer rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your full name"
           />
@@ -31,6 +68,8 @@ const page = () => {
             type="text"
             id="username"
             name='username'
+            value={form.username}
+            onChange={handleChange}
             className="w-full px-4 py-2 border cursor-pointer rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your username"
           />
@@ -45,6 +84,8 @@ const page = () => {
             type="email"
             id="email"
             name='email'
+            value={form.email}
+            onChange={handleChange}
             className="w-full px-4 py-2 border cursor-pointer rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your email"
           />
@@ -59,6 +100,8 @@ const page = () => {
             type="password"
             id="password"
             name='password'
+            value={form.password}
+            onChange={handleChange}
             className="w-full px-4 py-2 border cursor-pointer rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your password"
           />
@@ -76,6 +119,8 @@ const page = () => {
             type="password"
             id="confirmPassword"
             name='confirmPassword'
+            value={form.confirmPassword}
+            onChange={handleChange}
             className="w-full px-4 py-2 border cursor-pointer rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Confirm your password"
           />
@@ -87,6 +132,7 @@ const page = () => {
         
         <button
           type="submit"
+          onClick={handleSubmit}
           className="w-full bg-blue-700 text-white py-2 px-4 mt-6 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           Sign-Up
@@ -97,4 +143,4 @@ const page = () => {
   )
 }
 
-export default page
+export default SignUp
