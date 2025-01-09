@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
+
 const Profile = () => {
   const userData = {
     // profilePicture: "/profile.jpg", 
@@ -24,7 +25,7 @@ const Profile = () => {
           className="rounded-full object-cover"
         />
       </div>
-
+        
       <h1 className="text-2xl font-bold text-gray-800">{userData.name}</h1>
       <p className="text-gray-600 mt-2">{userData.bio}</p>
 
