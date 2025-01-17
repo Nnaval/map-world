@@ -5,6 +5,7 @@ import { CgDanger } from "react-icons/cg";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 const LogIn = () => {
   const router = useRouter();
@@ -22,6 +23,12 @@ const LogIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Login form submitted", form);
+    const success = await signIn("credentials", {
+      redirectTo: "/profile",
+      email: form.email,
+      password: form.password,
+    });
+    console.log("suc", success);
   };
 
   return (

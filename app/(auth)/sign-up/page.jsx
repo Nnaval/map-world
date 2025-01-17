@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AiOutlineEye } from "react-icons/ai";
+import { createUser } from "lib/actions/user.prisma";
 
 const SignUp = () => {
   const router = useRouter();
@@ -22,6 +23,8 @@ const SignUp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Registering Value", form);
+    const success = createUser(form);
+    if (success) router.push("/profile");
   };
 
   return (

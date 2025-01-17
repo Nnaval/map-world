@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "@styles/globals.css";
 import ButtomNav from "@components/ButtomNav";
+import Provider from "@components/providers/SessionProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,18 +14,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* <Provider>
-          <LocationProvider>
-            <CesiumViewerProvider> */}
-        <main className="bg-light">
-          <div className="">{children}</div>
-          <ButtomNav />
-        </main>
-        {/* <Bottombar />
-              <CesiumMapB />
-            </CesiumViewerProvider>
-          </LocationProvider>
-        </Provider> */}
+        <Provider>
+          <main className="bg-light">
+            <div className="">{children}</div>
+            <ButtomNav />
+          </main>
+        </Provider>
       </body>
     </html>
   );

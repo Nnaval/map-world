@@ -1,111 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
   id           Int          @id @default(autoincrement())
-  email        String       @unique
-  password     String
   username     String       @unique
+  about        String?
+  departmentId Int?
   name         String?
   picture      String?
-  status       String? // Nullable for users without status
-  levelId      Int? // Foreign key to Level (nullable)
-  departmentId Int? // Foreign key to Department (nullable)
-  about        String? // Nullable for user about
-  longitude    Float?
-  latitude     Float?
+  status       String?
+  email        String       @unique
+  password     String
+  bio          String?
+  levelId      Int?
   kingdom      String?
-  bio          String? // Use array of strings for titles
-  shops        Shop[] // Relation to shops
-  orders       Order[] // Relation to orders
-  statuses     UserStatus[] // Relation to user's personal statuses
-
-  department Department? @relation(fields: [departmentId], references: [id]) // Relation to Department
-  level      Level?      @relation(fields: [levelId], references: [id]) // Relation to Level
-  posts      Post[] // Relation to posts
-  comments   Comment[] // User can have many comments
+  latitude     Float?
+  longitude    Float?
+  coverImage   String?
+  comments     Comment[]
+  orders       Order[]
+  posts        Post[]
+  shops        Shop[]
+  department   Department?  @relation(fields: [departmentId], references: [id])
+  level        Level?       @relation(fields: [levelId], references: [id])
+  statuses     UserStatus[]
 }
 
 model Post {
-  id        String    @id @default(cuid()) // Unique identifier for post
-  authorId  String // Foreign key to the User model, now using Int for ID
-  text      String? // Text content of the status
-  media     String? // URL for images/videos associated with the status
+  id        String    @id @default(cuid())
+  authorId  String
+  content   Json?
   createdAt DateTime  @default(now())
-  content   Json? // JSONB field for dynamic content (e.g., comments, metadata)
   updatedAt DateTime  @updatedAt
-  comments  Comment[] // A post can have many comments
-
-  // Relations
-  author User @relation(fields: [authorId], references: [username], onDelete: Cascade) // Now referencing `id` of User
+  media     String?
+  text      String?
+  comments  Comment[]
+  author    User      @relation(fields: [authorId], references: [username], onDelete: Cascade)
 }
 
 model Comment {
-  id              String    @id @default(cuid()) // Unique ID for the comment
-  text            String // The comment content
-  postId          String // Foreign key to Post
-  post            Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
-  authorId        String // Foreign key to User (comment's author)
+  id              String    @id @default(cuid())
+  text            String
+  postId          String
+  authorId        String
+  parentCommentId String?
+  createdAt       DateTime  @default(now())
   author          User      @relation(fields: [authorId], references: [username], onDelete: Cascade)
-  parentCommentId String? // Foreign key to the parent comment (nullable)
   parentComment   Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
-  createdAt       DateTime  @default(now()) // Timestamp of when the comment was created
-  replies         Comment[] @relation("CommentReplies") // A comment can have multiple replies
+  replies         Comment[] @relation("CommentReplies")
+  post            Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model Shop {
   id             Int           @id
   name           String        @unique
   description    String
-  longitude      Float
-  latitude       Float
-  kingdom        String
-  size           Float         @default(0.0007)
   category       String
-  image          String?
+  requestedOrder String?
+  size           Float         @default(0.0007)
   userId         Int
+  kingdom        String
+  latitude       Float
+  longitude      Float
+  image          String?
+  orders         Order[]
   user           User          @relation(fields: [userId], references: [id])
   shopItems      ShopItem[]
-  orders         Order[] // Relation to orders made from this shop
-  requestedOrder String? // Used for tracking orders sent/requested
-  statuses       StoreStatus[] // Relation to store statuses
+  statuses       StoreStatus[]
 }
 
 model UserStatus {
   id        Int      @id @default(autoincrement())
-  content   String? // Text content of the status
-  media     String? // URL for images/videos associated with the status
+  content   String?
+  media     String?
   createdAt DateTime @default(now())
-  expiresAt DateTime // Expiry time for the status
+  expiresAt DateTime
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
 }
 
 model StoreStatus {
   id        Int      @id @default(autoincrement())
-  content   String? // Text content of the status
-  media     String? // URL for images/videos associated with the status
+  content   String?
+  media     String?
   createdAt DateTime @default(now())
-  expiresAt DateTime // Expiry time for the status
+  expiresAt DateTime
   shopId    String
   shop      Shop     @relation(fields: [shopId], references: [name])
 }
 
 model Department {
   id    Int    @id @default(autoincrement())
-  name  String @unique // Ensure department names are unique
+  name  String @unique
   users User[]
 }
 
 model Level {
   id    Int    @id @default(autoincrement())
-  name  String @unique // Ensure level names are unique
+  name  String @unique
   users User[]
 }
 
@@ -114,9 +112,9 @@ model ShopItem {
   name     String
   price    Float
   image    String
+  shopId   Int
   tag      String?
   quantity Int?    @default(1)
-  shopId   Int
   shop     Shop    @relation(fields: [shopId], references: [id])
 }
 
@@ -125,12 +123,12 @@ model Order {
   orderId     String      @unique
   totalAmount Float
   orderDate   DateTime
-  status      String // e.g., 'Pending', 'Processing', 'Completed', etc.
-  comment     String?
+  status      String
   userId      Int
-  user        User        @relation(fields: [userId], references: [id])
   shopId      String
+  comment     String?
   shop        Shop        @relation(fields: [shopId], references: [name])
+  user        User        @relation(fields: [userId], references: [id])
   items       OrderItem[]
 }
 
