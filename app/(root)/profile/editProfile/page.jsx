@@ -51,7 +51,7 @@ const EditProfile = () => {
     if (session) {
       setForm({
         name: form.name || session.user.name || "",
-        img: form.img || session.user.image || "",
+        img: form.img || session.user.image||  "",
         bio: form.bio || session.user.bio || "",
         about: form.about || session.user.about || "",
         department: form.department || session.user.department || "",
@@ -135,7 +135,6 @@ const EditProfile = () => {
   const handleFileChange = async (event) => {
     setWasNewImageUploaded(true);
     const file = event.target.files[0];
-
     // Check if the file is valid
     if (file && file instanceof Blob) {
       try {
@@ -159,6 +158,12 @@ const EditProfile = () => {
       reader.onerror = (error) => reject(error);
     });
   };
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Filtered departments based on search query
+  const filteredDepartments = departments.filter((department) =>
+    department.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center px-4 py-6">
       <div className="relative w-full max-w-2xl">
@@ -252,7 +257,6 @@ const EditProfile = () => {
               placeholder="Enter your gender"
             />
           </div>
-
           <div className="mb-4">
             <label
               htmlFor="about"
@@ -281,15 +285,32 @@ const EditProfile = () => {
                 setForm((prev) => ({ ...prev, department: value }))
               }
             >
-              <SelectTrigger className="">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select your Department" />
               </SelectTrigger>
               <SelectContent>
-                {departments.map((department) => (
-                  <SelectItem key={department} value={department}>
-                    {department}
-                  </SelectItem>
-                ))}
+                {/* Search Input */}
+                <div className="px-2 py-1">
+                  <input
+                    type="text"
+                    placeholder="Search department..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-2 py-1 border border-gray-300 rounded-md text-black"
+                  />
+                </div>
+                {/* Department Items */}
+                {filteredDepartments.length > 0 ? (
+                  filteredDepartments.map((department) => (
+                    <SelectItem key={department} value={department}>
+                      {department}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <div className="px-2 py-1 text-sm text-gray-500">
+                    No departments found.
+                  </div>
+                )}
               </SelectContent>
             </Select>
           </div>
