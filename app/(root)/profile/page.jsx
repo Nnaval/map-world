@@ -71,7 +71,7 @@ const Profile = () => {
           alt="Profile Picture"
           width={200}
           height={200}
-          className="rounded-full object-cover"
+          className="rounded-full w-32 h-32 object-cover"
         />
       </div>
 
@@ -84,7 +84,7 @@ const Profile = () => {
       <p className="text-gray-600 mt-2">
         {" "}
         {user?.bio || (
-          <div className="text-slate-300">Edit your Profile to add a bio.</div>
+          <p className="text-slate-300">Edit your Profile to add a bio.</p>
         )}
       </p>
 
