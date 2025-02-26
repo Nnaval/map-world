@@ -6,10 +6,13 @@ import { useSession } from "next-auth/react";
 import { fetchUserByUsername } from "@lib/actions/user.prisma";
 import Link from "next/link";
 import { CiEdit } from "react-icons/ci";
+import { FaRegEnvelope } from "react-icons/fa6";
 
-const Profile = () => {
-  const { data: session, status } = useSession();
+const Profile = ({ params }) => {
   const [user, setUser] = useState(null);
+  const id = params.id.replace(/%20/g, " ");
+  const [status, setStatus] = useState("");
+
   // const [posts, setPosts] = useState([]);
   // const { viewer, viewerReady, setMapVisible } = useCesiumViewer();
   // const onlineUsers = useOnlineUsers();
@@ -21,34 +24,26 @@ const Profile = () => {
     const fetchUserData = async () => {
       // socket.emit("set_user_online", session.user.username);
       // console.log({ isOnline });
-      if (session?.user) {
-        const fetchedUser = await fetchUserByUsername(session.user.username);
-        setUser(fetchedUser);
+      if (id) {
+        try {
+          setStatus("loading");
+          const fetchedUser = await fetchUserByUsername(id);
+          setUser(fetchedUser);
+        } catch (error) {
+        } finally {
+          setStatus("");
+        }
       }
     };
 
     fetchUserData();
-  }, [session?.user]);
+  }, [id]);
 
   if (status === "loading") {
     // Show a loading spinner or placeholder while the session is loading
     return (
       <div className="flex justify-center items-center h-screen">
         <p className="text-xl text-primary-500">Loading...</p>
-      </div>
-    );
-  }
-
-  if (!session) {
-    // Handle unauthenticated state
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-xl text-red-500">
-          You must be logged in to view this page.
-        </p>
-        <Link href="/login" className="btn btn-primary ml-2">
-          Sign In
-        </Link>
       </div>
     );
   }
@@ -76,16 +71,14 @@ const Profile = () => {
         />
       </div>
 
-      <h1 className="text-2xl font-bold text-gray-800">
-        {session?.user?.name || ""}
-      </h1>
-      <h6 className="text-sm font-light text-gray-500">
-        {session?.user?.username}
-      </h6>
+      <h1 className="text-2xl font-bold text-gray-800">{user?.name || ""}</h1>
+      <h6 className="text-sm font-light text-gray-500">{user?.username}</h6>
       <p className="text-gray-600 mt-2">
         {" "}
         {user?.bio || (
-          <p className="text-slate-300">Edit your Profile to add a bio.</p>
+          <span className="text-slate-300">
+            Edit your Profile to add a bio.
+          </span>
         )}
       </p>
 
@@ -96,22 +89,16 @@ const Profile = () => {
           </h2>
           <p className="text-sm text-gray-500">Connections</p>
         </div>
-        {/* <div>
-          <h2 className="text-xl font-semibold text-gray-800">
-          {userData.posts}
-          </h2>
-          <p className="text-sm text-gray-500">Posts</p>
-          </div> */}
       </div>
-      <Link href='/profile/edit'>
-        <CiEdit className="text-2xl" />
-      </Link>
-      {/* <button
-        type="button"
-        className="w- bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        Connect
-      </button> */}
+      <div className="flex gap-3 items-center mt-2">
+        <button
+          type="button"
+          className="w- bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          Connect
+        </button>
+        <FaRegEnvelope className="text-3xl" />
+      </div>
 
       <div className="mt-6 w-full max-w-md bg-white p-6 shadow-lg rounded-lg">
         <div className="mb-4">
@@ -124,15 +111,15 @@ const Profile = () => {
           <p className="mt-1 text-gray-600">{user?.email}</p>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-4">
           <h3 className="text-lg font-bold text-gray-800">Gender</h3>
           <p className="mt-1 text-gray-600">{userData.gender}</p>
         </div>
-        <div className="mb-6">
+        <div className="mb-4">
           <h3 className="text-lg font-bold text-gray-800">Department</h3>
           <p className="mt-1 text-gray-600">{user?.department?.name}</p>
         </div>
-        <div className="mb-6">
+        <div className="mb-4">
           <h3 className="text-lg font-bold text-gray-800">Level</h3>
           <p className="mt-1 text-gray-600">{user?.level?.name}</p>
         </div>

@@ -57,3 +57,16 @@ export const departments = [
   "Urban and Regional Planning",
   "Environmental Management and Evaluation",
 ];
+
+
+export const shopCategories = [
+  "Food & Beverage",
+  "Clothing & Accessories",
+  "Books & Stationery",
+  "Electronics & Accessories",
+  "Health & Beauty",
+  "Events & Entertainment",
+  "Secondhand Goods",
+  "Services",
+  "Tech Services",
+];

@@ -2,6 +2,12 @@ import { Inter } from "next/font/google";
 import "@styles/globals.css";
 import ButtomNav from "@components/ButtomNav";
 import Provider from "@components/providers/SessionProvider";
+import { SocketProvider } from "@components/providers/SocketProvider";
+import { OnlineUsersProvider } from "@components/providers/OnlineUsersProvider";
+import { OnlineShopsProvider } from "@components/providers/OnlineShopsProvider";
+import { LocationProvider } from "@components/providers/LocationProvider";
+import { CesiumViewerProvider } from "@components/providers/CesiumViewerProvider";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,10 +21,21 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <Provider>
-          <main className="bg-light">
-            <div className="">{children}</div>
-            <ButtomNav />
-          </main>
+          <SocketProvider>
+            <OnlineUsersProvider>
+              <OnlineShopsProvider>
+                <LocationProvider>
+                  <CesiumViewerProvider>
+                    <main className="bg-light">
+                      <div className="">{children}</div>
+                      <Toaster />
+                      <ButtomNav />
+                    </main>
+                  </CesiumViewerProvider>
+                </LocationProvider>
+              </OnlineShopsProvider>
+            </OnlineUsersProvider>
+          </SocketProvider>
         </Provider>
       </body>
     </html>

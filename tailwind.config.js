@@ -13,6 +13,7 @@ module.exports = {
       colors: {
         primary: "#2D75FB",
         "secondary-500": "#FFB620",
+        // "primary-500": "#FFB620",
         "light-1": "#FFFFFF",
         "light-2": "#FAFAFA",
         "light-3": "#D9D9D9",

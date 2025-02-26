@@ -61,7 +61,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.about = token.about;
         session.user.bio = token.bio;
       }
-      console.log("session after modification", session.user.name);
+      console.log("session after modification", session.user);
       return session;
     },
   },

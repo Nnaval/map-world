@@ -208,15 +208,15 @@ const EditProfile = () => {
         <form>
           <div className="mb-4">
             <label
-              htmlFor="fullName"
+              htmlFor="name"
               className="block text-gray-700 font-medium mb-2"
             >
               Full Name
             </label>
             <input
               type="text"
-              id="fullName"
-              name="fullName"
+              id="name"
+              name="name"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your full name"
               value={form.name}

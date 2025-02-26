@@ -6,7 +6,8 @@
       "@components/*": ["components/*"],
       "@lib/*": ["lib/*"],
       "@prisma/*": ["prisma/*"],
-      "@auth/*": ["auth/*"]
+      "@auth/*": ["auth/*"],
+      "@constants/*": ["constants/*"],
     }
   }
 }
