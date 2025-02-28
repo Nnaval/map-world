@@ -13,7 +13,6 @@ import { useCesiumViewer } from "@components/providers/CesiumViewerProvider";
 import { useLocation } from "@components/providers/LocationProvider";
 // import { userLocation } from "@constants/userDat";
 
-
 const UserInfoModal = ({ showModal, setShowModal, userInfo }) => {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
@@ -86,12 +85,13 @@ const UserInfoModal = ({ showModal, setShowModal, userInfo }) => {
               >
                 View Profile
               </Link>
-              <button
+              <Link
+                href={`/chat?receiverId=${user?.id}`}
                 className="bg-primary-500 text-sm text-white p-1 rounded-lg px-4 "
                 // onClick={handleEnterShop}
               >
                 <FaRegEnvelope className="text-2xl text-primary" />
-              </button>
+              </Link>
               <p
                 className="flex flex-col gap-1 items-center text-sm"
                 onClick={() =>

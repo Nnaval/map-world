@@ -11,9 +11,9 @@ const useGetConversations = () => {
 			setLoading(true);
 			try {
 				const res = await getUsersForSidebar();
-				console.log('res convo', res)
+				// console.log('res convo', res)
 				setConversations(res);
-				console.log('res convo was set', res)
+				// console.log('res convo was set', res)
 			} catch (error) {
 				console.log('error  during convo getting', error)
 				toast.error(error.message);
