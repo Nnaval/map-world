@@ -30,7 +30,44 @@ model User {
   department   Department?  @relation(fields: [departmentId], references: [id])
   level        Level?       @relation(fields: [levelId], references: [id])
   statuses     UserStatus[]
+
+  conversationsIds String[]
+
+  conversations Conversation[]
+  messages      Message[]
 }
+
+
+model Conversation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  participantIds Int[]
+  participants   User[]
+
+  messageIds String[]
+  messages   Message[]
+}
+
+model Message {
+  id String @id @default(cuid())
+
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+
+  senderId Int
+  sender   User   @relation(fields: [senderId], references: [id])
+
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Gender {
+  male
+  female
+  }
 
 model Post {
   id        String    @id @default(cuid())
