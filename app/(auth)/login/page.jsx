@@ -1,11 +1,12 @@
 "use client";
 import React from "react";
-import { AiOutlineEye } from "react-icons/ai";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { CgDanger } from "react-icons/cg";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { object } from "zod";
 
 const LogIn = () => {
   const router = useRouter();
@@ -15,13 +16,38 @@ const LogIn = () => {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
 
+  const validateEmail = (Email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(Email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const newError = {};
+
+    if (!form.email.trim()) {
+      newError.email = "Email is required";
+    } else if (!validateEmail(form.email)) {
+      newError.email = "Invalid email format";
+    }
+
+    if (!form.password.trim()) {
+      newError.password = "Input your Password";
+    }
+
+    if (Object.keys(newError).length > 0) {
+      setErrors(newError);
+    }
+
     console.log("Login form submitted", form);
     const success = await signIn("credentials", {
       redirectTo: "/profile",
@@ -57,9 +83,14 @@ const LogIn = () => {
               name="email"
               value={form.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border cursor-pointer rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full px-4 py-2 border ${
+                errors.email ? "border-red-500" : ""
+              }  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter your email"
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            )}
           </div>
 
           <div className="mb-4 relative">
@@ -70,19 +101,30 @@ const LogIn = () => {
               Password
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               name="password"
               value={form.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border cursor-pointer rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full px-4 py-2 border ${
+                errors.password ? "border-red-500" : ""
+              }  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter your password"
             />
-            <span className="absolute inset-y-0 right-4 flex items-center text-gray-500">
-              <AiOutlineEye className="font-extrabold text-2xl mt-6" />
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-4 flex items-center text-gray-500 cursor-pointer"
+            >
+              {showPassword ? (
+                <AiOutlineEyeInvisible className="font-extrabold text-2xl mt-6" />
+              ) : (
+                <AiOutlineEye className="font-extrabold text-2xl mt-6" />
+              )}
             </span>
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            )}
           </div>
-
           <div className="flex justify-end mb-6">
             <Link
               href="#"
