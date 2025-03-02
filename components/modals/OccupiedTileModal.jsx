@@ -28,7 +28,7 @@ const OccupiedTile = ({
   };
 
   const handleEnterShop = () => {
-    setMapVisible(false);
+    // setMapVisible(false);
     router.push(`/shops/${tileDetails.name}`);
   };
 

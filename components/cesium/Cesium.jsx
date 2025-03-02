@@ -230,7 +230,7 @@ const CesiumMapB = () => {
               console.log("its a user entity");
               setUserInfo({
                 username: properties.username,
-                position: pickedObject.id.position.getValue(JulianDate.now())
+                position: pickedObject.id.position.getValue(JulianDate.now()),
               });
               setShowUserModal(true);
               console.log("show modal state =", showUserModal);
@@ -241,7 +241,7 @@ const CesiumMapB = () => {
               console.log("its a label entity");
               setLabelInfo({
                 placename: properties.name,
-                location : properties.coordinates
+                location: properties.coordinates,
               });
               setShowLabelModal(true);
               console.log("show label state =", showUserModal);
@@ -320,24 +320,23 @@ const CesiumMapB = () => {
           />
         )}
 
-        {showModal && (
-          <>
-            {isOccupied ? (
-              <OccupiedTile
-                showModal={showModal}
-                setShowModal={setShowModal}
-                tileInfo={tileInfo}
-                tileDetails={occupiedTileDetails}
-              />
-            ) : (
-              <TileModal
-                showModal={showModal}
-                setShowModal={setShowModal}
-                tileInfo={tileInfo}
-              />
-            )}
-          </>
-        )}
+        {/* {showModal && ( */}
+        <>
+          {isOccupied ? (
+            <OccupiedTile
+              showModal={showModal}
+              setShowModal={setShowModal}
+              tileInfo={tileInfo}
+              tileDetails={occupiedTileDetails}
+            />
+          ) : (
+            <TileModal
+              showModal={showModal}
+              setShowModal={setShowModal}
+              tileInfo={tileInfo}
+            />
+          )}
+        </>
       </motion.div>
     </>
   );

@@ -19,7 +19,14 @@ import { useSession } from "next-auth/react";
 import { Cartesian3, Transforms } from "cesium";
 import { shopCategories } from "@constants/arrays";
 import socket from "@components/socket/Socket";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@components/ui/select";
+import Link from "next/link";
 // import { load3DModel } from "@constants/functions";
 
 const TileModal = ({ showModal, setShowModal, tileInfo }) => {
@@ -28,6 +35,7 @@ const TileModal = ({ showModal, setShowModal, tileInfo }) => {
   const { viewer, viewerReady } = useCesiumViewer();
 
   const [showPitchModal, setShowPitchModal] = useState(false); // State for the second modal
+  const [showNoUserModal, setShowNoUserModal] = useState(false); // State for the second modal
   const [showConfirmationModal, setShowConfirmationModal] = useState(false); // State for the final confirmation modal
   const [relocationModal, setRelocationModal] = useState(false); // State for the final confirmation modal
   const [relocationConfirmationModal, setRelocationConfirmationModal] =
@@ -57,8 +65,13 @@ const TileModal = ({ showModal, setShowModal, tileInfo }) => {
 
   const handlePitch = () => {
     console.log("handle pitch was striked");
-    setShowPitchModal(true); // Open the pitch modal
-    console.log("Pitched modal supposed don dey show");
+    if (session) {
+      setShowPitchModal(true); // Open the pitch modal
+      console.log("Pitched modal supposed don dey show");
+    } else {
+      setShowModal(false); // Close the modal after bookmarking
+      setShowNoUserModal(true);
+    }
   };
 
   const handleRelocate = async () => {
@@ -272,8 +285,12 @@ const TileModal = ({ showModal, setShowModal, tileInfo }) => {
         width="400px"
         height="fit"
       >
-        <h6 className="text-xl font-semibold">Pitch Your Business on the Map</h6>
-        <h6 className="text-slate-500 text-sm">Please fill in the details about your business</h6>
+        <h6 className="text-xl font-semibold">
+          Pitch Your Business on the Map
+        </h6>
+        <h6 className="text-slate-500 text-sm">
+          Please fill in the details about your business
+        </h6>
         <div className="flex flex-col gap-4 justify-center">
           <div className="flex flex-col gap-3 py-4">
             <div className="">
@@ -365,6 +382,41 @@ const TileModal = ({ showModal, setShowModal, tileInfo }) => {
             >
               Confirm
             </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        open={showNoUserModal}
+        onClose={() => setShowNoUserModal(false)}
+        width="300px"
+        height="fit"
+        className="border"
+      >
+        <div className=""></div>
+        <h6 className="text-lg font-semibold text-center">Opps</h6>
+        <div className="flex flex-col gap-4 items-center justify-center">
+          <p className="text-sm text-slate-700 text-center">
+            You have to be a registered user to complete this action
+          </p>
+          <div className="flex gap-2 text-sm">
+            <Link
+              href={"/login"}
+              className="bg-transperent border border-primary text-black p-1 rounded-lg px-4"
+              onClick={() => {
+                setShowPitchModal(true);
+                setShowConfirmationModal(false);
+              }}
+            >
+              Login
+            </Link>
+            <Link
+              href={"/sign-up"}
+              className="bg-transperent border border-primary text-black p-1 rounded-lg px-4"
+              onClick={handleConfirm}
+            >
+              Sign Up
+            </Link>
           </div>
         </div>
       </Modal>

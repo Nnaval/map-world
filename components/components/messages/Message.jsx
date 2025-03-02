@@ -23,7 +23,12 @@ const Message = ({ message }) => {
     >
       <div className="hidden md:block chat-image avatar">
         <div className="w-6 md:w-10 rounded-full">
-          <Image alt="profile" src={img} width={20} height={20} />
+          <Image
+            alt="profile"
+            src={img || "https://randomuser.me/api/portraits/men/1.jpg"}
+            width={20}
+            height={20}
+          />
         </div>
       </div>
       <div className="">
