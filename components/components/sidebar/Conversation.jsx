@@ -21,7 +21,13 @@ const Conversation = ({ conversation, emoji }) => {
       >
         <div className={`avatar ${isOnline ? "online" : ""}`}>
           <div className="w-8 md:w-12 rounded-full">
-            <img src={conversation.picture} alt="user avatar" />
+            <img
+              src={
+                conversation.picture ||
+                "https://randomuser.me/api/portraits/men/1.jpg"
+              }
+              alt="user avatar"
+            />
           </div>
         </div>
 

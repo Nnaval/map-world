@@ -14,6 +14,7 @@ import {
   fetchUserShopById,
   fetchUserShopByUserId,
   shopCouter,
+  updateShopTileId,
 } from "@lib/actions/shops.prisma";
 import { useSession } from "next-auth/react";
 import { Cartesian3, Transforms } from "cesium";
@@ -40,8 +41,11 @@ const TileModal = ({ showModal, setShowModal, tileInfo }) => {
   const [relocationModal, setRelocationModal] = useState(false); // State for the final confirmation modal
   const [relocationConfirmationModal, setRelocationConfirmationModal] =
     useState(false); // State for the final confirmation modal
+  const [relocationError, setRelocationError] = useState(""); // State for the final confirmation modal
+
   const [userStores, setUserStores] = useState([]); // State for the final confirmation modal
   const [idOfShopToBeRelocated, setIdOfShopToBeRelocated] = useState(null);
+  const [nameOfShopToBeRelocated, setNameOfShopToBeRelocated] = useState(null);
 
   const handleBookMark = () => {
     console.log("Bookmarked Tile:", tileInfo.id);
@@ -74,6 +78,14 @@ const TileModal = ({ showModal, setShowModal, tileInfo }) => {
     }
   };
 
+  const relocateLogic = async (storeId, storeName) => {
+    setRelocationModal(false);
+    console.log("about to relocate store with the Id", storeId);
+    setIdOfShopToBeRelocated(storeId);
+    setNameOfShopToBeRelocated(storeName);
+    setRelocationConfirmationModal(true);
+  };
+
   const handleRelocate = async () => {
     setRelocationModal(true);
     // setShowModal(false);
@@ -98,18 +110,22 @@ const TileModal = ({ showModal, setShowModal, tileInfo }) => {
     // load3DModel(viewer, "new relocated", tileInfo.longitude, tileInfo.latitude);
     console.log("shop suppose don dey show for new location");
     console.log("wasPositionChanged", wasPositionChanged);
-    setRelocationConfirmationModal(false);
-    setShowModal(false);
+    const success = await updateShopTileId({
+      storeName: nameOfShopToBeRelocated,
+      newTileId: tileInfo.id,
+      longitude: tileInfo.longitude,
+      latitude: tileInfo.latitude,
+      storeId: idOfShopToBeRelocated,
+    });
+    if (success) {
+      setRelocationConfirmationModal(false);
+      setShowModal(false);
+    } else {
+      setRelocationError("something went wrong , please try again");
+    }
   };
 
-  const relocateLogic = async (storeId) => {
-    setRelocationModal(false);
-    console.log("about to relocate store with the Id", storeId);
-    setIdOfShopToBeRelocated(storeId);
-    setRelocationConfirmationModal(true);
-  };
-
-  const handleNext = () => {
+  const handleNext = async () => {
     // setShowPitchModal(false); // Close the pitch modal
     setShowConfirmationModal(true); // Open the confirmation modal
     // setShowPitchModal(false); // Open the pitch modal
@@ -445,7 +461,7 @@ const TileModal = ({ showModal, setShowModal, tileInfo }) => {
               </div>
               <button
                 className="btn p-1"
-                onClick={() => relocateLogic(store.id)}
+                onClick={() => relocateLogic(store.id, store.name)}
               >
                 Select
               </button>
@@ -468,6 +484,7 @@ const TileModal = ({ showModal, setShowModal, tileInfo }) => {
             Are you sure you want to relocate your store
             {idOfShopToBeRelocated} to the new Tile{tileInfo.id} ?
           </p>
+          +{" "}
           <div className="flex gap-2 text-sm">
             <button
               className="bg-primary text-white p-1 rounded-lg px-4"

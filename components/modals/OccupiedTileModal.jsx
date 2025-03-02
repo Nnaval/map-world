@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Modal from "./Modal";
 import Link from "next/link";
 // import Button from "../Button";
@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { CopyIcon } from "lucide-react";
 import { generateLocationLink } from "@constants/functions";
+import { FaDeleteLeft } from "react-icons/fa6";
+import { deleteStore } from "@lib/actions/shops.prisma";
 
 const OccupiedTile = ({
   showModal,
@@ -18,6 +20,9 @@ const OccupiedTile = ({
   onRelocate,
 }) => {
   const { viewer, viewerReady, setMapVisible } = useCesiumViewer();
+  const [openDeleteModal, setopenDeleteModal] = useState(false);
+  const [deleteError, setDeleteError] = useState(""); // State for the final confirmation modal
+
   const router = useRouter();
 
   console.log("tileuser =", tileDetails.user.username);
@@ -31,11 +36,20 @@ const OccupiedTile = ({
     // setMapVisible(false);
     router.push(`/shops/${tileDetails.name}`);
   };
-
-  const handleRelocate = () => {
-    setIsRelocating(true);
-    setShowModal(false); // Close the modal on relocate button click
-    onRelocate(); // Trigger the parent function to start relocation mode
+  const entityToRelocate = viewer.entities.getById(`tile-${tileInfo.id}`);
+  const handleDeleteStore = async (storeName) => {
+    setDeleteError("");
+    try {
+      const success = await deleteStore(storeName);
+      if (success) {
+        const isRemoved = viewer.entities.remove(entityToRelocate);
+        console.log("is removed ", isRemoved);
+        setopenDeleteModal(false);
+      }
+    } catch (error) {
+      setDeleteError("something went wrong");
+      console.log("Error Deleting store", error);
+    }
   };
   return (
     <div>
@@ -47,25 +61,31 @@ const OccupiedTile = ({
       >
         <div className="flex flex-col gap-3">
           {tileInfo.id && <p className="text-center">Tile No: {tileInfo.id}</p>}
-          <Link
-            href={`/profile/${tileDetails.user?.username}`}
-            className="flex gap-2 items-center"
-          >
-            <div className="w-7 h-7 rounded-full ">
-              <Image
-                src={
-                  tileDetails.user.picture ||
-                  `https://randomuser.me/api/portraits/men/1.jpg`
-                }
-                alt="profile_image"
-                width={100}
-                height={100}
-                className="rounded-full"
-              />
-            </div>
-            <p className="text-slate-400">{tileDetails.user.username}</p>
-          </Link>
 
+          <div className="flex justify-between">
+            <Link
+              href={`/profile/${tileDetails.user?.username}`}
+              className="flex gap-2 items-center"
+            >
+              <div className="w-7 h-7 rounded-full ">
+                <Image
+                  src={
+                    tileDetails.user.picture ||
+                    `https://randomuser.me/api/portraits/men/1.jpg`
+                  }
+                  alt="profile_image"
+                  width={100}
+                  height={100}
+                  className="rounded-full"
+                />
+              </div>
+              <p className="text-slate-400">{tileDetails.user.username}</p>
+            </Link>
+            <FaDeleteLeft
+              className="text-2xl "
+              onClick={() => setopenDeleteModal(true)}
+            />
+          </div>
           <div className="flex gap-2">
             <Image
               src={
@@ -107,24 +127,54 @@ const OccupiedTile = ({
         </div>
         <div className="flex flex-col items-center text-[10px]">
           <p className="text-sm">Location: Opposite Munalux Hotel</p>
-          {tileInfo.longitude && (
-            <div className="flex gap-3">
-              <p>
-                <strong>X:</strong> {tileInfo.longitude}
-              </p>
-              <p>
-                <strong>Y:</strong> {tileInfo.latitude}
-              </p>
-            </div>
-          )}
-          <button
-            type="button"
-            onClick={() =>
-              generateLocationLink(tileInfo.longitude, tileInfo.latitude)
-            }
-          >
-            <CopyIcon className=" text-2xl" />
-          </button>
+
+          <div className="flex gap--3 items-center">
+            {tileInfo.longitude && (
+              <div className="flex gap-3">
+                <p>
+                  <strong>X:</strong> {tileInfo.longitude}
+                </p>
+                <p>
+                  <strong>Y:</strong> {tileInfo.latitude}
+                </p>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() =>
+                generateLocationLink(tileInfo.longitude, tileInfo.latitude)
+              }
+            >
+              <CopyIcon className=" text-2xl" />
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        open={openDeleteModal}
+        onClose={() => setopenDeleteModal(false)}
+        width="400px"
+        height="fit"
+        className="border"
+      >
+        <div className=""></div>
+        <h6 className="text-lg font-semibold">Confirm Delete</h6>
+        <div className="flex flex-col gap-4 items-center justify-center">
+          <p className="text-sm text-slate-400">
+            Are you absolutely sure you want to delete this particular store ,
+            (Action cannot be undone !)
+          </p>
+          {deleteError && <p className="">{deleteError}</p>}
+
+          <div className="flex gap-2 text-sm">
+            <button
+              className="bg-red-500 text-white p-1 rounded-lg px-4"
+              onClick={() => handleDeleteStore(tileDetails.name)}
+            >
+              Delete
+            </button>
+          </div>
         </div>
       </Modal>
     </div>
