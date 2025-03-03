@@ -20,14 +20,13 @@ const products = [
   },
 ];
 
-const ProductDetailPage = () => {
+const ShopsDynamicPage = () => {
   const router = useRouter();
   const { id } = useParams();
   const product = products.find((p) => p.id === id) || products[0];
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Back Arrow */}
       <div className="p-4">
         <AiOutlineArrowLeft
           className="text-2xl cursor-pointer"
@@ -35,41 +34,44 @@ const ProductDetailPage = () => {
         />
       </div>
 
-      {/* Main Product Image */}
       <div className="flex justify-center">
         <Image
           src={product.image}
           alt={product.name}
-          width={300}
-          height={300}
+          width={250}
+          height={250}
           className="rounded-lg"
         />
       </div>
 
-      {/* Product Info */}
-      <div className="p-4">
+      <div className="p-6">
         <h2 className="text-lg font-semibold">{product.name}</h2>
         <p className="text-gray-600 text-sm">{product.description}</p>
 
-        {/* Price and Buttons */}
-        <div className="mt-4">
+        <div className="mt-10">
           <p className="text-gray-700 font-semibold">Price</p>
           <div className="flex space-x-4 mt-2">
-            <button className="border border-blue-500 text-blue-500 px-4 py-2 rounded-lg">
+            <button className="border border-blue-500 text-blue-500 text-md px-4 font-bold py-2 rounded-lg">
               Add to Cart
             </button>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">
+            <button className="bg-blue-500 text-white text-md px-4 py-2 font-bold rounded-lg">
               Buy Now
             </button>
           </div>
         </div>
       </div>
 
-      {/* Related Product Images */}
       <div className="p-4">
         <div className="grid grid-cols-4 gap-2">
           {product.relatedImages.map((img, index) => (
-            <Image key={index} src={img} alt="related product" width={80} height={80} className="rounded-lg cursor-pointer" />
+            <Image
+              key={index}
+              src={img}
+              alt="related product"
+              width={60}
+              height={60}
+              className="rounded-lg cursor-pointer"
+            />
           ))}
         </div>
       </div>
@@ -77,4 +79,4 @@ const ProductDetailPage = () => {
   );
 };
 
-export default ProductDetailPage;
+export default ShopsDynamicPage;
