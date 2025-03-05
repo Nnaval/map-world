@@ -20,10 +20,11 @@ const SignUp = () => {
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Registering Value", form);
-    const success = createUser(form);
+    const success = await createUser(form);
+    console.log("success", success);
     if (success) router.push("/profile");
   };
 
