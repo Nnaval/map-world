@@ -64,7 +64,7 @@ const Shops = () => {
         </div>
       </div>
       <div className="flex flex-col p.-14 py-2  rounded-b-lg h-[65v] overflow-y-scrol">
-        {shops.map((shop) => (
+        {shops?.map((shop) => (
           <div
             className="flex flex-col py-2 bg-slate-200 mb-4 p-4 rounded-lg"
             key={shop.name}

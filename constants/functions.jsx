@@ -81,7 +81,7 @@ const loadAndAlignTileset = async (viewer, assetId) => {
 export const loadNewBuildingTileset = async (cesiumViewer) => {
   // Array of tileset IDs and corresponding names for better debugging
   const tilesets = [
-    // { id: 2975213, name: "map" },
+    { id: 3159860, name: "map" },
     { id: 2593928, name: "senate" },
     { id: 2593447, name: "roundabout" },
     { id: 2975229, name: "NDDC" },
@@ -123,13 +123,13 @@ export const loadNewBuildingTileset = async (cesiumViewer) => {
   try {
     // Load all tilesets sequentially to ensure smooth loading and debug visibility
     for (const { id, name } of tilesets) {
-      // console.log(`Loading tileset: ${name} (ID: ${id})`);
+      console.log(`Loading tileset: ${name} (ID: ${id})`);
       const tileset = await Cesium3DTileset.fromIonAssetId(id);
       cesiumViewer.scene.primitives.add(tileset);
 
       // Wait for the tileset to be ready before proceeding
       await tileset.readyPromise;
-      // console.log(`Successfully loaded tileset: ${name}`);
+      console.log(`Successfully loaded tileset: ${name}`);
       // await alignTilesetBaseToGround(tileset);
 
       // Adjust height offset
@@ -147,7 +147,7 @@ export const createTileWithProperties = (
   y,
   size,
   properties,
-  color = Color.GREEN.withAlpha(0.1)
+  color = Color.GREEN.withAlpha(0.5)
 ) => {
   return cesiumViewer.entities.add({
     position: Cartesian3.fromDegrees(x, y, 0),
@@ -191,8 +191,8 @@ export const addPlacesToViewer = async (viewer) => {
 
   const createEntity = (place, minDist, maxDist, fontSize) => {
     const { latitude, longitude, placeName } = place;
-    const lon =     parseFloat(longitude)
-    const lat =     parseFloat(latitude)
+    const lon = parseFloat(longitude);
+    const lat = parseFloat(latitude);
 
     const entity = viewer.entities.add({
       position: Cartesian3.fromDegrees(
@@ -237,7 +237,7 @@ export const load3DModel = async (cesiumViewer, shopName, lon, lat, tileId) => {
   const modelMatrix = Transforms.eastNorthUpToFixedFrame(position);
 
   const model = await Model.fromGltfAsync({
-    url: "/shops/food_shop.glb", // Replace with your shop model
+    uri: "/shops/food_shop.glb", // Model file
     modelMatrix: modelMatrix,
     scale: 2,
   });
@@ -550,12 +550,12 @@ export const generateLocationLink = (longitude, latitude) => {
 };
 
 export function extractTime(dateString) {
-	const date = new Date(dateString);
-	const hours = padZero(date.getHours());
-	const minutes = padZero(date.getMinutes());
-	return `${hours}:${minutes}`;
+  const date = new Date(dateString);
+  const hours = padZero(date.getHours());
+  const minutes = padZero(date.getMinutes());
+  return `${hours}:${minutes}`;
 }
 // Helper function to pad single-digit numbers with a leading zero
 function padZero(number) {
-	return number.toString().padStart(2, "0");
+  return number.toString().padStart(2, "0");
 }

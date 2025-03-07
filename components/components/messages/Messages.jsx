@@ -17,7 +17,7 @@ const Messages = () => {
   const ref = useChatScroll(messages);
 
   return (
-    <div className="px-4 flex-1 overflow-auto" ref={ref}>
+    <div className="px-4 flex-1 overflow-auto z-30" ref={ref}>
       {loading && [...Array(3)].map((_, idx) => <MessageSkeleton key={idx} />)}
 
       {!loading &&

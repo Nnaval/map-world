@@ -37,7 +37,6 @@ model User {
   messages      Message[]
 }
 
-
 model Conversation {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
@@ -57,17 +56,19 @@ model Message {
   conversation   Conversation @relation(fields: [conversationId], references: [id])
 
   senderId Int
-  sender   User   @relation(fields: [senderId], references: [id])
+  sender   User @relation(fields: [senderId], references: [id])
 
   body      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  isRead Boolean @default(false)
 }
 
 enum Gender {
   male
   female
-  }
+}
 
 model Post {
   id        String    @id @default(cuid())

@@ -11,6 +11,7 @@ import { CopyIcon } from "lucide-react";
 import { generateLocationLink } from "@constants/functions";
 import { FaDeleteLeft } from "react-icons/fa6";
 import { deleteStore } from "@lib/actions/shops.prisma";
+import { useSession } from "next-auth/react";
 
 const OccupiedTile = ({
   showModal,
@@ -22,6 +23,7 @@ const OccupiedTile = ({
   const { viewer, viewerReady, setMapVisible } = useCesiumViewer();
   const [openDeleteModal, setopenDeleteModal] = useState(false);
   const [deleteError, setDeleteError] = useState(""); // State for the final confirmation modal
+  const { data: session } = useSession();
 
   const router = useRouter();
 
@@ -81,10 +83,12 @@ const OccupiedTile = ({
               </div>
               <p className="text-slate-400">{tileDetails.user.username}</p>
             </Link>
-            <FaDeleteLeft
-              className="text-2xl "
-              onClick={() => setopenDeleteModal(true)}
-            />
+            {session?.user.name === tileDetails.user.username && (
+              <FaDeleteLeft
+                className="text-2xl "
+                onClick={() => setopenDeleteModal(true)}
+              />
+            )}
           </div>
           <div className="flex gap-2">
             <Image

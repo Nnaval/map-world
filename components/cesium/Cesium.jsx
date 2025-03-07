@@ -275,7 +275,7 @@ const CesiumMapB = () => {
       >
         <div
           id="cesiumContainer"
-          className="w-full h-[120vh] overflow-hidden relative border "
+          className="w-full h-screen overflow-hidden relative border border-green-700 border-4 "
         >
           {/* search/other basr */}
           <MapFlyers

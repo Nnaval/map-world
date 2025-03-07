@@ -38,7 +38,7 @@ const MapFlyers = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredPlace, setFilteredPlace] = useState([]);
   const [debounceTimer, setDebounceTimer] = useState(null);
-  const [openFlyers, setOpenFlyers] = useState(true);
+  const [openFlyers, setOpenFlyers] = useState(false);
   const { viewer, viewerReady } = useCesiumViewer();
   const { stableLocation, error } = useLocation();
   const [locationError, setLocationError] = useState("");
@@ -140,11 +140,6 @@ const MapFlyers = ({
 
       {stableLocation && (
         <>
-          <button className="fixed z-20 bottom-60 right-20">
-            <FaLocationCrosshairs className="text-white bg-primary-500 text-3xl rounded-full p-2" />
-            <p className="text-blue-500 text-[10px]">Fly Me Back</p>
-          </button>
-
           <div className="fixed bg-slate-200 cursor-pointer z-20 bottom-20 right-8 text-lg  p-2 rounded-lg">
             <div
               className={`transition-all duration-300 ${

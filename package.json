@@ -24,6 +24,8 @@
     "cors": "^2.8.5",
     "deck.gl": "^9.0.1",
     "framer-motion": "^11.11.1",
+    "idb": "^8.0.2",
+    "localforage": "^1.10.0",
     "lucide-react": "^0.379.0",
     "mongodb": "^6.10.0",
     "mongoose": "^8.8.1",

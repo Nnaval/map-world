@@ -8,9 +8,13 @@ const useListenMessages = () => {
   const { messages, setMessages } = useConversation();
 
   useEffect(() => {
-    socket.on("newMessage", (newMessage) => {
+    socket.on("newMessage", async (newMessage) => {
       toast("a new message was recieved");
-      setMessages([...messages, newMessage.message]);
+      const updatedMessages = [...messages, newMessage];
+      setMessages(updatedMessages);
+
+      // Save new message to IndexedDB
+      await saveMessagesToDB(receiverId, senderId, updatedMessages);
       console.log("messages context", messages);
       newMessage.shouldShake = true;
       const sound = new Audio("/sounds/notification.mp3");
