@@ -1,77 +1,77 @@
 "use client";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { AiOutlineArrowLeft, AiOutlineBell } from "react-icons/ai";
 import { useParams } from "next/navigation";
-import { AiOutlineArrowLeft } from "react-icons/ai";
 
-const products = [
-  {
-    id: "1",
-    name: "Product Name",
-    description: "Product Full Description",
-    price: "$20.00",
-    image: "/assets/logo.svg",
-    relatedImages: [
-      "/assets/logo.svg",
-      "/assets/logo.svg",
-      "/assets/logo.svg",
+const ShopDynamicPage = () => {
+  const { id } = useParams();
+
+  // Dummy Data
+  const shopInfo = {
+    name: "Name of Business",
+    description: "Business Description",
+    profileImage: "/assets/IceHomeImage1.jpg", // Replace with actual image
+    orders: 13,
+    products: [
+      "/assets/IceHomeImage1.jpg",
+      "/assets/IceHomeImage1.jpg",
+      "/assets/IceHomeImage1.jpg",
+      "/assets/IceHomeImage1.jpg",
+      "/assets/IceHomeImage1.jpg",
+      "/assets/IceHomeImage1.jpg",
+      "/assets/IceHomeImage1.jpg",
+      "/assets/IceHomeImage1.jpg",
       "/assets/IceHomeImage1.jpg",
     ],
-  },
-];
-
-const ShopsDynamicPage = () => {
-  const router = useRouter();
-  const { id } = useParams();
-  const product = products.find((p) => p.id === id) || products[0];
+  };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="p-4">
-        <AiOutlineArrowLeft
-          className="text-2xl cursor-pointer"
-          onClick={() => router.back()}
-        />
+    <div className="min-h-screen bg-gray-100 pb-20">
+      <div className="relative bg-blue-500 text-white text-center p-6 rounded-b-lg pb-20">
+        <div className="absolute top-4 left-4 text-2xl cursor-pointer">
+          <AiOutlineArrowLeft />
+        </div>
+        <div className="absolute top-4 right-4 text-2xl cursor-pointer">
+          <AiOutlineBell />
+        </div>
+
+        <h2 className="text-lg font-bold">{shopInfo.name}</h2>
+        <p className="text-sm">{shopInfo.description}</p>
+
+        <div className="absolute left-1/2 transform -translate-x-1/2 bottom-[-40px]">
+          <Image
+            src={shopInfo.profileImage}
+            alt="Profile"
+            width={80}
+            height={80}
+            className="rounded-full border-4 border-white"
+          />
+        </div>
       </div>
 
-      <div className="flex justify-center">
-        <Image
-          src={product.image}
-          alt={product.name}
-          width={250}
-          height={250}
-          className="rounded-lg"
-        />
-      </div>
-
-      <div className="p-6">
-        <h2 className="text-lg font-semibold">{product.name}</h2>
-        <p className="text-gray-600 text-sm">{product.description}</p>
-
-        <div className="mt-10">
-          <p className="text-gray-700 font-semibold">Price</p>
-          <div className="flex space-x-4 mt-2">
-            <button className="border border-blue-500 text-blue-500 text-md px-4 font-bold py-2 rounded-lg">
-              Add to Cart
-            </button>
-            <button className="bg-blue-500 text-white text-md px-4 py-2 font-bold rounded-lg">
-              Buy Now
-            </button>
-          </div>
+      <div className="mt-16 px-4">
+        <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md">
+          <p className="text-gray-600">Orders</p>
+          <p className="font-bold">{shopInfo.orders} ➜</p>
+        </div>
+        <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md mt-4">
+          <p className="text-gray-600">Products</p>
+          <p className="font-bold">➜</p>
         </div>
       </div>
 
       <div className="p-4">
         <div className="grid grid-cols-4 gap-2">
-          {product.relatedImages.map((img, index) => (
-            <Image
-              key={index}
-              src={img}
-              alt="related product"
-              width={60}
-              height={60}
-              className="rounded-lg cursor-pointer"
-            />
+          {shopInfo.products.map((product, index) => (
+            <div key={index} className="bg-white p-2 rounded-lg shadow-sm">
+              <Image
+                src={product}
+                alt="Product"
+                width={80}
+                height={80}
+                className="rounded-lg"
+              />
+            </div>
           ))}
         </div>
       </div>
@@ -79,4 +79,4 @@ const ShopsDynamicPage = () => {
   );
 };
 
-export default ShopsDynamicPage;
+export default ShopDynamicPage;
