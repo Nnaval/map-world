@@ -1,6 +1,7 @@
 // import { useSocketContext } from "../../context/SocketContext";
 // import useConversation from "../../zustand/useConversation";
 
+import Image from "next/image";
 import useConversation from "zustand/useConversation";
 
 const Conversation = ({ conversation, emoji }) => {
@@ -20,20 +21,23 @@ const Conversation = ({ conversation, emoji }) => {
         onClick={() => setSelectedConversation(conversation)}
       >
         <div className={`avatar ${isOnline ? "online" : ""}`}>
-          <div className="w-8 md:w-12 rounded-full">
-            <img
+          <div className="w-14 h-14 md:w-12 rounded-full">
+            <Image
               src={
                 conversation.picture ||
                 "https://randomuser.me/api/portraits/men/1.jpg"
               }
-              alt="user avatar"
+              alt="dp"
+              width={20}
+              height={20}
+              className="w-14 h-14 rounded-full"
             />
           </div>
         </div>
 
         <div className="flex flex-col flex-1">
           <div className="flex gap-3 justify-between">
-            <p className="font-bold text-gray-200 text-sm md:text-md">
+            <p className="font-semibold text-slate-600  text-sm md:text-md">
               {conversation.name}
             </p>
             <span className="text-xl hidden md:inline-block">{emoji}</span>

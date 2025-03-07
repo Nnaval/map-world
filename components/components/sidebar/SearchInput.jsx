@@ -33,15 +33,12 @@ const SearchInput = () => {
       <input
         type="text"
         placeholder="Search…"
-        className="input-sm md:input input-bordered rounded-full sm:rounded-full w-full"
+        className="w-full border rounded-full p-2 px-3 outline-none"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      <button
-        type="submit"
-        className="btn md:btn-md btn-sm btn-circle bg-sky-500 text-white  "
-      >
-        <Search className="w-4 h-4 md:w-6 md:h-6 outline-none" />
+      <button type="submit" className=" text-sky-500   ">
+        <Search className="text-lg font-bold" />
       </button>
     </form>
   );
