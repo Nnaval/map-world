@@ -59,7 +59,7 @@ const ShopDynamicPage = () => {
           <p className="font-bold">➜</p>
         </div>
       </div>
-
+{/* recent changes */}
       <div className="p-4">
         <div className="grid grid-cols-4 gap-2">
           {shopInfo.products.map((product, index) => (

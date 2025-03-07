@@ -35,7 +35,7 @@ const ProductDynamicPage = () => {
           onClick={() => router.back()}
         />
       </div>
-
+{/* recent changes */}
       <div className="w-full flex justify-center bg-gray-100 p-6">
         <Image
           src={product.image}
