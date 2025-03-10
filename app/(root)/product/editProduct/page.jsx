@@ -2,7 +2,7 @@
 import BackNav from "@components/BackNav";
 import { useState } from "react";
 
-const ProductPage = () => {
+const EditProductPage = () => {
   const [product, setProduct] = useState({
     name: "",
     description: "",
@@ -81,10 +81,10 @@ const ProductPage = () => {
       />
 
       <button className="bg-blue-500 text-white px-4 py-2 rounded">
-        Upload Product
+        Confirm Changes
       </button>
     </div>
   );
 };
 
-export default ProductPage;
+export default EditProductPage;
