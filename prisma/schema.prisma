@@ -146,14 +146,15 @@ model Level {
 }
 
 model ShopItem {
-  id       Int     @id @default(autoincrement())
-  name     String
-  price    Float
-  image    String
-  shopId   Int
-  tag      String?
-  quantity Int?    @default(1)
-  shop     Shop    @relation(fields: [shopId], references: [id])
+  id          Int     @id @default(autoincrement())
+  name        String
+  price       Float
+  image       String
+  description String
+  shopId      Int
+  tag         String?
+  quantity    Int?    @default(1)
+  shop        Shop    @relation(fields: [shopId], references: [id])
 }
 
 model Order {
