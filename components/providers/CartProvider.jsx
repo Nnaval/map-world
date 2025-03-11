@@ -9,19 +9,18 @@ export const useCart = () => useContext(CartContext);
 
 // Provide the cart context to your app
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState({}); // Default to an empty cart
-
-  // Only access localStorage on the client side
-  useEffect(() => {
+  // Lazily load cart from localStorage on the client side
+  const [cart, setCart] = useState(() => {
     if (typeof window !== "undefined") {
-      const savedCart = JSON.parse(localStorage.getItem("cart"));
-      setCart(savedCart || {}); // Set cart from localStorage if available
+      const savedCart = localStorage.getItem("cart");
+      return savedCart ? JSON.parse(savedCart) : {};
     }
-  }, []); // Runs once when the component is mounted
+    return {}; // Return empty object if running on the server
+  });
 
-  // Update localStorage when cart changes
+  // Save to localStorage whenever cart updates
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && Object.keys(cart).length > 0) {
       localStorage.setItem("cart", JSON.stringify(cart));
     }
   }, [cart]);
@@ -79,7 +78,9 @@ export const CartProvider = ({ children }) => {
   // Function to clear the entire cart
   const clearCart = () => {
     setCart({});
-    console.log("Cleared entire cart");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("cart");
+    }
   };
 
   return (

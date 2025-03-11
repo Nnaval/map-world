@@ -1,4 +1,5 @@
 "use client";
+import { useCart } from "@components/providers/CartProvider";
 import { fetchProductById } from "@lib/actions/product.prisma";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AiOutlineArrowLeft } from "react-icons/ai";
+import { toast } from "sonner";
 
 const products = [
   {
@@ -27,7 +29,9 @@ const ProductDynamicPage = ({ params }) => {
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { addToCart } = useCart();
   const productId = params.id.replace(/%20/g, " ");
+
   useEffect(() => {
     const fetchProduct = async () => {
       // setLoading(true)
@@ -42,6 +46,13 @@ const ProductDynamicPage = ({ params }) => {
     };
     fetchProduct();
   }, [productId]);
+
+  const handleAddToCart = (item) => {
+    // console.log("item", item);
+    console.log("product.shopId", product);
+    addToCart(product.shopId, item);
+    toast("Items added to cart ✅");
+  };
 
   if (loading) {
     return (
@@ -134,7 +145,10 @@ const ProductDynamicPage = ({ params }) => {
 
       <div className="p-4 w-full">
         <div className="flex justify-center w-full space-x-4 mt-2">
-          <button className="border border-blue-700 text-blue-700 px-4 py-2 rounded-lg w-full">
+          <button
+            className="border border-blue-700 text-blue-700 px-4 py-2 rounded-lg w-full"
+            onClick={() => handleAddToCart(product)}
+          >
             Add to Cart
           </button>
           <button className="bg-blue-700 text-white px-4 py-2 rounded-lg w-full">

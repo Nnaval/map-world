@@ -8,6 +8,7 @@ import { OnlineShopsProvider } from "@components/providers/OnlineShopsProvider";
 import { LocationProvider } from "@components/providers/LocationProvider";
 import { CesiumViewerProvider } from "@components/providers/CesiumViewerProvider";
 import { Toaster } from "sonner";
+import { CartProvider } from "@components/providers/CartProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,11 +27,13 @@ export default function RootLayout({ children }) {
               <OnlineShopsProvider>
                 <LocationProvider>
                   <CesiumViewerProvider>
-                    <main className="bg-light">
-                      <div className="">{children}</div>
-                      <Toaster />
-                      <ButtomNav />
-                    </main>
+                    <CartProvider>
+                      <main className="bg-light">
+                        <div className="">{children}</div>
+                        <Toaster />
+                        <ButtomNav />
+                      </main>
+                    </CartProvider>
                   </CesiumViewerProvider>
                 </LocationProvider>
               </OnlineShopsProvider>
