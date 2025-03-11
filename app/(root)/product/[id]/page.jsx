@@ -1,6 +1,7 @@
 "use client";
 import { fetchProductById } from "@lib/actions/product.prisma";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -76,6 +77,12 @@ const ProductDynamicPage = ({ params }) => {
           className=""
         />
       </div>
+      <Link
+        href={`${params.id}/edit`}
+        className="flex  items-end bg-primary p-2 rounded-lg shadow-md"
+      >
+        <p className="text-white">Edit Product</p>
+      </Link>
 
       <div className="p-4 w-full">
         <h2 className="text-lg font-semibold capitalize">{product.name}</h2>
