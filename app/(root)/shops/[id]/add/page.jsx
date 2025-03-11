@@ -1,67 +1,55 @@
 "use client";
-import {
-  addShopItemsToShopId,
-  fetchUserShopById,
-} from "@lib/actions/shops.prisma";
+import BackNav from "@components/BackNav";
+import { addShopItemsToShopId } from "@lib/actions/shops.prisma";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaCamera } from "react-icons/fa6";
-import { MdEdit } from "react-icons/md";
 
-const Page = ({ params }) => {
+const AddProductPage = ({ params }) => {
   const { data: session } = useSession();
+  const router = useRouter();
   const userId = parseFloat(session?.user.id);
 
   const shopId = params.id.replace(/%20/g, " ");
   const [shop, setShop] = useState({});
 
   const [wasNewImageUploaded, setWasNewImageUploaded] = useState(false);
+  const [product, setProduct] = useState({
+    name: "",
+    image: "",
+    description: "",
+    quantity: "",
+    price: "",
+    category: "",
+  });
 
-  useEffect(() => {
-    const fetchUserShop = async () => {
-      try {
-        const fetchedShop = await fetchUserShopById(shopId);
-        setShop(fetchedShop);
-      } catch (error) {
-        console.error("Error fetching shop:", error);
-      }
-    };
-    fetchUserShop();
-  }, []);
-  // console.log("shop", shop);
-
-  const [title, setTitle] = useState("");
-
-  const [forms, setForms] = useState([
-    { id: 1, name: "", price: "", desc: "", quantity: "", image: "" }, // Initial form with fields
-  ]);
-  const handleAddForm = () => {
-    setForms([
-      ...forms,
-      { id: forms.length + 1, name: "", price: "", quantity: "", image: "" },
-    ]);
-  };
-  const handleInputChange = (id, field, value) => {
-    setForms((prevForms) =>
-      prevForms.map((form) =>
-        form.id === id ? { ...form, [field]: value } : form
-      )
-    );
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProduct((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const router = useRouter();
+  // only numbers are allowed for quantity and price fields but decimal is allowed
+  const handleNumberChange = (e) => {
+    const { name, value } = e.target;
+    if (/^\d*\.?\d*$/.test(value)) {
+      setProduct((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
   const handleSubmit = async () => {
-    const dataToSubmit = {
-      tag: title,
-      items: forms,
-      userId: userId,
-      shopId: shopId,
-    };
+    console.log("Product form", product);
+
     // console.log("Submitting data:", dataToSubmit);
     try {
-      const result = await addShopItemsToShopId(dataToSubmit);
+      const result = await addShopItemsToShopId(shopId, product);
       // console.log("items added successfully" , result)
       if (result.success) {
         router.back();
@@ -99,11 +87,10 @@ const Page = ({ params }) => {
           body: JSON.stringify({ image: base }),
         });
         const data = await response.json();
-        setForms((prevForms) =>
-          prevForms.map((form) =>
-            form.id === formId ? { ...form, image: data.url } : form
-          )
-        );
+        setProduct((prev) => ({
+          ...prev,
+          image: data.url,
+        }));
       } catch (error) {
         console.error("Error uploading image:", error);
       }
@@ -113,142 +100,89 @@ const Page = ({ params }) => {
   };
 
   return (
-    <div>
-      <h6 className="font-bold text-xl">Stock Your Store with Items</h6>
-      <div className="">
-        {/* Title Input */}
+    <div className="min-h-screen bg-white flex flex-col items-center p-4">
+      <div className="w-full flex items-center mb-4">
+        <BackNav />
+      </div>
+
+      <div className="w-24 h-24 bg-gray-200 flex items-center justify-center rounded-3xl cursor-pointer mb-4 relative">
+        {/* <div className="mt-6"> */}
+        {/* <div className="flex justify-center items-center cursor-pointer"> */}
+        {/* Hidden file input */}
         <input
-          type="text"
-          name="title"
-          placeholder="Enter title for items"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="bg-transparent outline-none mb-5"
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+          id="file-input"
         />
 
-        {/* Render all the forms from the state */}
-        {forms.map((form) => (
-          <div
-            key={form.id}
-            className="flex flex-col border border-primary-500 p-2 rounded-md w-full mb-4"
-          >
-            <div className="flex justify-between w-full">
-              <div className="flex items-start gap-2">
-                <div className="rounded-full w-24 h-24 border   flex justify-center items-center cursor-pointer">
-                  {/* Hidden file input */}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleFileChange(e, form.id)}
-                    className="hidden"
-                    id={`file-input-${form.id}`}
-                  />
+        {/* Camera icon button to trigger file input */}
+        <label htmlFor="file-input" className="absolute cursor-pointer">
+          <FaCamera className="text-3xl text-gray-600" />
+        </label>
 
-                  {/* Camera icon button to trigger file input */}
-                  <label
-                    htmlFor={`file-input-${form.id}`}
-                    className="absolute cursor-pointer"
-                  >
-                    <FaCamera className="text-3xl text-gray-600" />
-                  </label>
-
-                  {/* Display the selected image */}
-                  {form.image && (
-                    <Image
-                      src={form.image}
-                      alt="Profile_image"
-                      width={100}
-                      height={100}
-                      className="rounded w-full h-full object-cover"
-                    />
-                  )}
-                </div>
-                <div className="flex flex-col gap-3">
-                  <div className="flex flex-col">
-                    <label htmlFor="name" className="font-bold text-sm">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder="Item Name"
-                      value={form.name}
-                      onChange={(e) =>
-                        handleInputChange(form.id, "name", e.target.value)
-                      }
-                      className="bg-transparent outline-none border"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <label htmlFor="name" className="font-bold text-sm">
-                      Description
-                    </label>
-                    <input
-                      type="text"
-                      name="desc"
-                      placeholder="Item desc"
-                      value={form.desc}
-                      onChange={(e) =>
-                        handleInputChange(form.id, "desc", e.target.value)
-                      }
-                      className="bg-transparent outline-none border"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <label htmlFor="price" className="font-bold text-sm">
-                      Price
-                    </label>
-                    <input
-                      type="number"
-                      name="price"
-                      placeholder="Price"
-                      value={form.price}
-                      onChange={(e) =>
-                        handleInputChange(form.id, "price", e.target.value)
-                      }
-                      className="bg-transparent outline-none border"
-                    />
-                  </div>
-                </div>
-              </div>
-              <MdEdit className="text-white text-xl" />
-            </div>
-            <div className="flex text-sm w-full gap-4 mt-2">
-              {/* <div className="flex flex-col">
-                <label htmlFor="qty" className="font-bold text-sm">
-                  Qty
-                </label>
-                <input
-                  type="number"
-                  name="quantity"
-                  placeholder="Quantity"
-                  value={form.quantity}
-                  onChange={(e) =>
-                    handleInputChange(form.id, "quantity", e.target.value)
-                  }
-                  className="bg-transparent outline-none border"
-                />
-              </div> */}
-            </div>
-          </div>
-        ))}
-
-        {/* Button to add a new form */}
-        <div className="flex items-end justify-end w-full my-2">
-          <button type="button" className="btn p-1" onClick={handleAddForm}>
-            Add
-          </button>
-        </div>
-
-        {/* Button to submit the form data */}
-        <div className="flex items-end justify-end w-full my-2">
-          <button type="button" className="btn p-1" onClick={handleSubmit}>
-            Submit
-          </button>
-        </div>
+        {/* Display the selected image */}
+        {product.image && (
+          <Image
+            src={product.image}
+            alt="Profile_image"
+            layout="fill"
+            className="w-full h-full object-cover"
+          />
+        )}
+        {/* </div> */}
+        {/* </div> */}
       </div>
+
+      <input
+        type="text"
+        name="name"
+        value={product.name}
+        onChange={handleChange}
+        placeholder="Name of Product"
+        className="w-full p-2 border rounded mb-2"
+      />
+      <textarea
+        name="description"
+        value={product.description}
+        onChange={handleChange}
+        placeholder="Description"
+        className="w-full p-2 border rounded mb-2"
+      ></textarea>
+      <input
+        type="number"
+        name="quantity"
+        value={product.quantity}
+        onChange={handleNumberChange}
+        placeholder="Quantity in stock"
+        className="w-full p-2 border rounded mb-2"
+      />
+      <input
+        type="text"
+        name="price"
+        value={product.price}
+        onChange={handleNumberChange}
+        placeholder="#Price"
+        className="w-full p-2 border rounded mb-2"
+      />
+      <input
+        type="text"
+        name="category"
+        value={product.category}
+        onChange={handleChange}
+        placeholder="Category"
+        className="w-full p-2 border rounded mb-4"
+      />
+
+      <button
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+        onClick={handleSubmit}
+      >
+        Upload Product
+      </button>
     </div>
   );
 };
 
-export default Page;
+export default AddProductPage;

@@ -22,6 +22,7 @@ import StatusDrawer from "@components/drawers/StatusDrawer";
 import AddTextStatusDrawer from "@components/drawers/AddTextStatusDrawer";
 import { MdEdit } from "react-icons/md";
 import AddMediaStatusDrawer from "@components/drawers/AddMediaStatusDrawer";
+import Link from "next/link";
 
 const ShopDynamicPage = ({ params }) => {
   const { id } = useParams();
@@ -75,13 +76,6 @@ const ShopDynamicPage = ({ params }) => {
       try {
         const fetchedShop = await fetchUserShopById(shopId);
         setShop(fetchedShop);
-        setForm((prevForm) => ({
-          ...prevForm,
-          name: fetchedShop?.name || "",
-          desc: fetchedShop?.description || "",
-          image: fetchedShop?.image || "",
-          category: fetchedShop?.category || "",
-        }));
       } catch (error) {
         console.error("Error fetching shop:", error);
       } finally {
@@ -106,10 +100,10 @@ const ShopDynamicPage = ({ params }) => {
 
   const filteredItems =
     searchTerm.trim() === ""
-      ? shop?.shopItems
-      : shop?.shopItems.filter((item) =>
+      ? shop?.shopItems || []
+      : shop?.shopItems?.filter((item) =>
           item.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        ) || [];
 
   if (loadingShop) {
     return (
@@ -175,9 +169,17 @@ const ShopDynamicPage = ({ params }) => {
       )}
 
       <div className="mt-5 px-4">
-        <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md">
-          <p className="text-gray-600">Orders</p>
-          <p className="font-bold">{shopInfo.orders} ➜</p>
+        <div className="flex items-center justify-between ">
+          <div className="flex justify-between items-center bg-white p-2 rounded-lg shadow-md gap-2">
+            <p className="text-gray-600">Orders</p>
+            <p className="font-bold">{shop.orders.length}➜</p>
+          </div>
+          <Link
+            href={`${params.id}/add`}
+            className="flex  items-center bg-primary p-2 rounded-lg shadow-md"
+          >
+            <p className="text-white">Add Product</p>
+          </Link>
         </div>
         <div className="flex justify-between items-center bg-white py-4 text-lg rounded-lg font-bold mt-4">
           <p className="">Products</p>
@@ -187,22 +189,23 @@ const ShopDynamicPage = ({ params }) => {
       <div className="p-4">
         <div className="">
           {filteredItems.length !== 0 ? (
-            filteredItems.products.map((product, index) => (
-              <div className="grid grid-cols-4 gap-2">
-                <div
+            <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+              {filteredItems.map((product, index) => (
+                <Link
+                  href={`/product/${product.id}`}
                   key={index}
-                  className="bg-slate-100 p-2 rounded shadow-sm h-24 relative"
+                  className="bg-slate-100 border p-2 rounded shadow-sm h-24 relative"
                 >
                   <Image
-                    src={product}
+                    src={product.image}
                     alt="Product"
                     layout="fill" /* Makes the image take full width & height */
-                    objectFit="cover" /* Ensures the image covers the entire space */
+                    objectFit="contain" /* Ensures the image covers the entire space */
                     className="rounded"
                   />
-                </div>
-              </div>
-            ))
+                </Link>
+              ))}
+            </div>
           ) : (
             <div className="text-center text-slate-700 text-lg">
               No Product Found
