@@ -11,16 +11,31 @@ import { useSession } from "next-auth/react";
 import socket from "@components/socket/Socket";
 import { toast } from "sonner";
 import { useCart } from "@components/providers/CartProvider";
+import { rejectOrder } from "@lib/actions/order.prisma";
 
 const CartPage = () => {
   const { cart, removeFromCart, clearShopCart, addToCart } = useCart();
+
   const { data: session } = useSession();
   const userId = parseFloat(session?.user.id);
-  const [activeTab, setActiveTab] = useState("requests");
+  const [activeTab, setActiveTab] = useState("cart");
 
   useEffect(() => {
     console.log("cart-===", cart);
   }, [cart]);
+
+  // useEffect(() => {
+  //   const pendingOrders = shop.orders.filter(
+  //     (order) => order.status === "Pending"
+  //   ); // Filter only pending orders
+  //   setOrders(pendingOrders);
+  //   socket.on("new_order", (orderData) => {
+  //     toast("A new order was placed ");
+
+  //     setOrders((prevOrders) => [...prevOrders, orderData]);
+  //   });
+  // }, []);
+  // console.log("orders", orders);
 
   const handleRequestClick = async (shopId, shopName) => {
     console.log("User A requests items from shop:", shopId);
@@ -54,8 +69,19 @@ const CartPage = () => {
     }
   };
 
+  const handleRejectClick = async (orderId) => {
+    const rejected = await rejectOrder(orderId, "Items not available");
+    console.log("rejected", rejected);
+  };
+
   const calculateTotal = (shopItems) => {
     return shopItems
+      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .toFixed(2);
+  };
+
+  const calculateOrderTotal = (items) => {
+    return items
       .reduce((total, item) => total + item.price * item.quantity, 0)
       .toFixed(2);
   };
@@ -167,33 +193,55 @@ const CartPage = () => {
         </button>
       </div>
 
-      {activeTab === "requests" && (
+      {/* {activeTab === "requests" && (
         <div className="w-full">
           {requests.map((request) => (
             <div
               key={request.id}
-              className="p-6 border mb-2 rounded flex items-center"
+              className="p-2 border bg-white mb-2 rounded-lg flex items-center justify-between w-full"
             >
-              <img
-                src={request.image}
-                alt={request.name}
-                className="w-16 h-16 mr-4 rounded"
-              />
-              <div className="">
-                <h3 className="mb-1 text-lg font-bold">{request.name}</h3>
-                <p className="mb-1">{request.description}</p>
-                <p className="mb-1 text-sm ">Qty: {request.quantity}</p>
-                <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2">
-                  Accept
-                </button>
-                <button className="bg-red-500 text-white px-2 py-1 rounded">
-                  Reject
-                </button>
+              <div className="flex w-full">
+                <Image
+                  src={request.image}
+                  alt={request.name}
+                  width={100}
+                  height={100}
+                  className="w-20 h-20 mr-4 rounded"
+                />
+                <div className="w-full flex flex-col gap-1">
+                  <div className="flex justify-between">
+                    <div className=" ">
+                      <h3 className="font-semibold">
+                        {request.name.length > 50
+                          ? request.name.substring(0, 25) + "..."
+                          : request.name}
+                      </h3>
+                      <p className="text-sm text-slate-700">
+                        {request.description.length > 50
+                          ? request.description.substring(0, 50) + "..."
+                          : request.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex  items-center justify-between">
+                    <p className="font-bold">₦{"155,000"}</p>
+                    <p className="mx-2">x{request.quantity}</p>
+                    <div className="">
+                      <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2">
+                        Accept
+                      </button>
+                      <button className=" text-black border border-black  px-2 py-1 rounded">
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
         </div>
-      )}
+      )} */}
 
       {activeTab === "cart" && (
         <div className="w-full">

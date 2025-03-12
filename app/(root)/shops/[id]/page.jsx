@@ -23,6 +23,7 @@ import AddTextStatusDrawer from "@components/drawers/AddTextStatusDrawer";
 import { MdEdit } from "react-icons/md";
 import AddMediaStatusDrawer from "@components/drawers/AddMediaStatusDrawer";
 import Link from "next/link";
+import socket from "@components/socket/Socket";
 
 const ShopDynamicPage = ({ params }) => {
   const { id } = useParams();
@@ -70,6 +71,12 @@ const ShopDynamicPage = ({ params }) => {
   const onlineShops = useOnlineShops();
   const isShopActive = onlineShops.some((shop) => shop.name === shopId);
   // const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState("requests");
+  const [orders, setOrders] = useState([]);
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
 
   useEffect(() => {
     const fetchUserShop = async () => {
@@ -85,6 +92,19 @@ const ShopDynamicPage = ({ params }) => {
     fetchUserShop();
   }, [shopId]);
 
+  useEffect(() => {
+    const pendingOrders = shop?.orders.filter(
+      (order) => order.status === "Pending"
+    ); // Filter only pending orders
+    setOrders(pendingOrders);
+    console.log("Orders", orders);
+    socket.on("new_order", (orderData) => {
+      toast("New Order was placed");
+
+      setOrders((prevOrders) => [...prevOrders, orderData]);
+    });
+  }, [shop]);
+
   const pushToRelativeMap = () => {
     setMapVisible(true);
     const shopLocation = {
@@ -96,6 +116,17 @@ const ShopDynamicPage = ({ params }) => {
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleRejectClick = async (orderId) => {
+    const rejected = await rejectOrder(orderId, "Items not available");
+    console.log("rejected", rejected);
+  };
+
+  const calculateOrderTotal = (items) => {
+    return items
+      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .toFixed(2);
   };
 
   const filteredItems =
@@ -169,49 +200,130 @@ const ShopDynamicPage = ({ params }) => {
       )}
 
       <div className="mt-5 px-4">
-        <div className="flex items-center justify-between ">
-          <div className="flex justify-between items-center bg-white p-2 rounded-lg shadow-md gap-2">
-            <p className="text-gray-600">Orders</p>
-            <p className="font-bold">{shop.orders.length}➜</p>
-          </div>
-          <Link
-            href={`${params.id}/add`}
-            className="flex  items-center bg-primary p-2 rounded-lg shadow-md"
+        <div className="flex w-full justify-around mb-4 border-b">
+          <button
+            className={`p-2 ${
+              activeTab === "product"
+                ? "border-b-2 w-[150px] border-blue-500"
+                : ""
+            }`}
+            onClick={() => handleTabChange("product")}
           >
-            <p className="text-white">Add Product</p>
-          </Link>
-        </div>
-        <div className="flex justify-between items-center bg-white py-4 text-lg rounded-lg font-bold mt-4">
-          <p className="">Products</p>
+            Products
+          </button>
+          <button
+            className={`p-2 flex gap-2 items-center ${
+              activeTab === "requests"
+                ? "border-b-2 w-[150px] border-blue-500"
+                : ""
+            }`}
+            onClick={() => handleTabChange("requests")}
+          >
+            Requests{" "}
+            <p className="bg-primary text-white text-sm p-1 rounded-full">
+              {shop.orders.length}
+            </p>
+          </button>
         </div>
       </div>
       {/* recent changes */}
-      <div className="p-4">
-        <div className="">
-          {filteredItems.length !== 0 ? (
-            <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
-              {filteredItems.map((product, index) => (
-                <Link
-                  href={`/product/${product.id}`}
-                  key={index}
-                  className="bg-slate-100 border p-2 rounded shadow-sm h-24 relative"
-                >
-                  <Image
-                    src={product.image}
-                    alt="Product"
-                    layout="fill" /* Makes the image take full width & height */
-                    objectFit="contain" /* Ensures the image covers the entire space */
-                    className="rounded"
-                  />
-                </Link>
+
+      {activeTab === "product" && (
+        <div className="p-4">
+          <div className="">
+            {filteredItems.length !== 0 ? (
+              <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+                {filteredItems.map((product, index) => (
+                  <Link
+                    href={`/product/${product.id}`}
+                    key={index}
+                    className="bg-slate-100 border p-2 rounded shadow-sm h-24 relative"
+                  >
+                    <Image
+                      src={product.image}
+                      alt="Product"
+                      layout="fill" /* Makes the image take full width & height */
+                      objectFit="contain" /* Ensures the image covers the entire space */
+                      className="rounded"
+                    />
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center text-slate-700 text-lg">
+                No Product Found
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="bg-slate-50">
+        {activeTab === "requests" &&
+          (orders && orders.length > 0 ? (
+            <div className="w-full">
+              {orders.map((order) => (
+                <>
+                  <p className="text-slate-600 font-semibold px-2 text-lg">
+                    {" "}
+                    {order.user.username}
+                  </p>
+
+                  <div
+                    key={order.id}
+                    className="p-2 border  mb-2 rounded-lg flex flex-col gap-1 items-center justify-between w-full"
+                  >
+                    {order.items.map((item, i) => (
+                      <div className="flex w-full bg-white" key={i}>
+                        <Image
+                          src={item.image || "/assets/IceHomeImage1.jpg"}
+                          alt={item.name}
+                          width={100}
+                          height={100}
+                          className="w-20 h-20 mr-4 rounded"
+                        />
+                        <div className="w-full flex flex-col gap-1">
+                          <div className="flex justify-between">
+                            <div className=" ">
+                              <h3 className="font-semibold">
+                                {item.name.length > 50
+                                  ? item.name.substring(0, 25) + "..."
+                                  : item.name}
+                              </h3>
+                              {/* <p className="text-sm text-slate-700">
+                        {item.description.length > 50
+                          ? item.description.substring(0, 50) + "..."
+                          : item.description}
+                      </p> */}
+                            </div>
+                          </div>
+
+                          <div className="flex  items-center justify-between">
+                            <p className="font-bold">
+                              ₦{item.price.toFixed(2)}
+                            </p>
+                            <p className="mx-2">x{item.quantity}</p>
+                            <div className="">
+                              <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2">
+                                Accept
+                              </button>
+                              <button className=" text-black border border-black  px-2 py-1 rounded">
+                                Reject
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               ))}
             </div>
           ) : (
-            <div className="text-center text-slate-700 text-lg">
-              No Product Found
+            <div className="h-20 text-slate-300 flex flex-col items-center justify-center">
+              <p>You Don&apos;t have any Pending Order</p>
             </div>
-          )}
-        </div>
+          ))}
       </div>
 
       <MdEdit
