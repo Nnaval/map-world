@@ -65,7 +65,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 px-4 py-6 flex flex-col items-center">
+    <div className="min-h-screen bg-gray-100 px-4 py-6 mb-10 flex flex-col items-center">
       <div className="w-32 h-32 mb-4">
         <Image
           src={user?.picture || "/assets/logo.svg"}
@@ -103,7 +103,7 @@ const Profile = () => {
           <p className="text-sm text-gray-500">Posts</p>
           </div> */}
       </div>
-      <Link href='/profile/edit'>
+      <Link href="/profile/edit">
         <CiEdit className="text-2xl" />
       </Link>
       {/* <button

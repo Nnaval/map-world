@@ -5,22 +5,15 @@ import useConversation from "zustand/useConversation";
 
 const Message = ({ message }) => {
   const { data: session, status } = useSession();
-
   const { selectedConversation } = useConversation();
 
   const fromMe = message?.senderId == session?.user?.id;
   const img = fromMe ? session?.user.image : selectedConversation?.picture;
-  const chatClass = fromMe ? "chat-end" : "chat-start";
-
-  const bubbleBg = fromMe ? "bg-blue-500" : "";
+  const bubbleBg = fromMe ? "bg-primary" : "bg-slate-200 ";
   const shakeClass = "shake";
-  //   console.log("message", message);
+
   return (
-    <div
-      className={`chat flex border w-full gap-2 ${chatClass} ${
-        fromMe && "flex-row-reverse"
-      }`}
-    >
+    <div className={`flex w-full gap-2 ${fromMe && "flex-row-reverse"}`}>
       <div className="hidden md:block chat-image avatar">
         <div className="w-6 md:w-10 rounded-full">
           <Image
@@ -31,17 +24,22 @@ const Message = ({ message }) => {
           />
         </div>
       </div>
-      <div className="">
+      <div
+        className={`flex flex-col max-w-[70%] md:max-w-[50%] ${
+          fromMe ? "items-end" : "items-start"
+        }`}
+      >
         <p
-          className={`chat-bubble text-black ${bubbleBg} ${shakeClass} ${
-            fromMe && "text-right"
-          } text-sm md:text-md w-fit`}
+          className={`rounded-xl px-3 py-2 ${bubbleBg} ${shakeClass} ${
+            fromMe ? "text-white" : "text-black"
+          } text-sm md:text-md w-fit font-sans leading-tight break-words`}
         >
           {message.body}
         </p>
+
         <span
-          className={`chat-footer opacity-50 text-xs flex gap-1 items-center ${
-            fromMe && "justify-end"
+          className={`opacity-50 text-xs flex gap-1 items-center ${
+            fromMe ? "justify-end" : "justify-start"
           } text-black`}
         >
           {extractTime(message.createdAt)}
@@ -50,4 +48,5 @@ const Message = ({ message }) => {
     </div>
   );
 };
+
 export default Message;

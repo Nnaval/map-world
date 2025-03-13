@@ -14,7 +14,7 @@ const MessageContainer = () => {
 
   return (
     <div
-      className={`w-full flex flex-col ${
+      className={`w-full flex flex-col bg-white z-20 ${
         !selectedConversation && "hidden md:flex"
       }`}
     >
@@ -25,9 +25,9 @@ const MessageContainer = () => {
       ) : (
         <>
           {/* Header */}
-          <div className="bg-slate-500 px-4 py-2 mb-2 flex gap-3 items-center z-40">
+          <div className="border-b px-4 py-2 mb-2 flex gap-3 items-center z-40">
             <IoMdArrowBack
-              className="text-lg"
+              className="text-xl"
               onClick={() => setSelectedConversation(null)}
             />
             <div className="w-10 h-10 border rounded-full">

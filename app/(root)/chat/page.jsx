@@ -48,7 +48,7 @@ const chatPage = () => {
     }
   }, [receiverId, setSelectedConversation, session]);
   return (
-    <div className="flex h-screen w-full rounded-lg overflow-hidden bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0 z-30 mb-10">
+    <div className="flex h-screen w-full rounded-lg overflow-hidden bg-gray-400 bg-clip-padding  bg-opacity-0 z-30 ">
       <Sidebar />
       <MessageContainer />
     </div>
