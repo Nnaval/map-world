@@ -82,7 +82,7 @@ const Profile = () => {
       <h6 className="text-sm font-light text-gray-500">
         {session?.user?.username}
       </h6>
-      <p className="text-gray-600 mt-2">
+      <p className="text-gray-600 mt-2 text-center">
         {" "}
         {user?.bio || (
           <p className="text-slate-300">Edit your Profile to add a bio.</p>
@@ -103,8 +103,8 @@ const Profile = () => {
           <p className="text-sm text-gray-500">Posts</p>
           </div> */}
       </div>
-      <Link href="/profile/edit">
-        <CiEdit className="text-2xl" />
+      <Link href="/profile/edit" className="flex gap-2">
+        Edit Profile <CiEdit className="text-2xl" />
       </Link>
       {/* <button
         type="button"

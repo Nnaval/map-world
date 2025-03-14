@@ -71,7 +71,7 @@ const ShopDynamicPage = ({ params }) => {
   const onlineShops = useOnlineShops();
   const isShopActive = onlineShops.some((shop) => shop.name === shopId);
   // const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("requests");
+  const [activeTab, setActiveTab] = useState("product");
   const [orders, setOrders] = useState([]);
 
   const handleTabChange = (tab) => {
@@ -188,7 +188,6 @@ const ShopDynamicPage = ({ params }) => {
           )}
         </div>
       </div>
-
       {shop && (
         <StatusDrawer
           open={showDrawer}
@@ -198,6 +197,15 @@ const ShopDynamicPage = ({ params }) => {
           status={shop?.statuses}
         />
       )}
+
+      <div className="flex items-end justify-end">
+        <Link
+          href={`${params.id}/add`}
+          className="flex  items-end bg-primary p-2 rounded-lg shadow-md"
+        >
+          <p className="text-white">Add Product</p>
+        </Link>
+      </div>
 
       <div className="mt-5 px-4">
         <div className="flex w-full justify-around mb-4 border-b">
@@ -227,7 +235,6 @@ const ShopDynamicPage = ({ params }) => {
         </div>
       </div>
       {/* recent changes */}
-
       {activeTab === "product" && (
         <div className="p-4">
           <div className="">
@@ -257,7 +264,6 @@ const ShopDynamicPage = ({ params }) => {
           </div>
         </div>
       )}
-
       <div className="bg-slate-50">
         {activeTab === "requests" &&
           (orders && orders.length > 0 ? (
@@ -325,7 +331,6 @@ const ShopDynamicPage = ({ params }) => {
             </div>
           ))}
       </div>
-
       <MdEdit
         className="text-primary text-3xl fixed bottom-24 right-1"
         onClick={() => setOpenTextStatusModal(true)}

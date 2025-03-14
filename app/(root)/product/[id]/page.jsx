@@ -71,7 +71,7 @@ const ProductDynamicPage = ({ params }) => {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center mb-14">
+    <div className="min-h-screen bg-white flex flex-col items-center mb-10">
       <div className="w-full p-4 flex items-center">
         <AiOutlineArrowLeft
           className="text-2xl cursor-pointer"
@@ -88,24 +88,30 @@ const ProductDynamicPage = ({ params }) => {
           className=""
         />
       </div>
-      <Link
-        href={`${params.id}/edit`}
-        className="flex  items-end bg-primary p-2 rounded-lg shadow-md"
-      >
-        <p className="text-white">Edit Product</p>
-      </Link>
+      <div className="flex  w-full items-end justify-end">
+        <Link
+          href={`${params.id}/edit`}
+          className="flex  items-end bg-primary p-2 rounded-lg shadow-md"
+        >
+          <p className="text-white">Edit Product</p>
+        </Link>
+      </div>
 
       <div className="p-4 w-full">
         <h2 className="text-lg font-semibold capitalize">{product.name}</h2>
 
         <div className="flex flex-col gap-1 mt-3">
-          <h2 className="text-lg font-bold capitalize">product Description</h2>
-          <p className="text-gray-600 text-sm">{product?.description}</p>
+          <h2 className="text-lg font-semibold capitalize">
+            product Description
+          </h2>
+          <p className="text-gray-600 text-sm break-words whitespace-pre-wrap">
+            {product?.description}
+          </p>
         </div>
       </div>
-      <div className="flex gap-3 flex-wrap">
+      <div className="flex gap-3 px-1">
         <div
-          className={`flex-1 min-w-[200px] flex flex-col gap-2 border-l-[3px] rounded bg-slate-100 px-5 py-4 border-primary border-1 `}
+          className={`flex-1 min-w-[190pxpx] flex flex-col gap-2 border-l-[3px] rounded bg-slate-100 px-5 py-4 border-primary border-1 `}
         >
           <div className="flex gap-3">
             <p className="text-base text-black-100">Price</p>
@@ -124,7 +130,7 @@ const ProductDynamicPage = ({ params }) => {
         </div>
 
         <div
-          className={`flex-1 min-w-[200px] flex flex-col gap-2 border-l-[3px] rounded bg-slate-100 px-5 py-4 border-primary border-1 `}
+          className={`flex-1 min-w-[180px] flex flex-col gap-2 border-l-[3px] rounded bg-slate-100 px-5 py-4 border-primary border-1 `}
         >
           <div className="flex gap-3">
             <p className="text-base text-black-100">Quantity</p>

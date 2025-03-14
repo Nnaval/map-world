@@ -81,10 +81,12 @@ const StatusViewer = ({ storeStatusUpdates, onClose }) => {
                 objectFit="contain"
               />
             </div>
-            <p className="text-lg leading-relaxed">{currentStatus.content}</p>
+            <p className="text-lg leading-relaxed break-words whitespace-pre-wrap">
+              {currentStatus.content}
+            </p>
           </div>
         ) : (
-          <div className="w-full h-full flex justify-center items-center text-white text-xl p-5 bg-black/80">
+          <div className="w-full h-full flex justify-center items-center text-white text-xl p-5 bg-black/80 break-words whitespace-pre-wrap">
             {currentStatus.content}
           </div>
         )}
