@@ -33,26 +33,28 @@ const MessageInput = () => {
 
   return (
     <form className="z-30" onSubmit={handleSubmit}>
-      <div className="w-full relative">
-        <textarea
-          className="border text-sm rounded-t block w-full p-2.5 bg-gray-700 border-gray-600 text-white resize-none overflow-hidden"
-          placeholder="Send a message"
-          value={message}
-          onChange={handleChange}
-          rows={rows} // Dynamically adjust rows
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="absolute inset-y-0 end-0 flex items-center pr-3 disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label="Send Message"
-        >
-          {loading ? (
-            <span className="loading loading-spinner" />
-          ) : (
-            <Send className="w-6 h-6 text-white" />
-          )}
-        </button>
+      <div className="flex gap-1 relative">
+        <div className="w-full flex gap-1 items-end  ">
+          <textarea
+            className="border text-sm block w-full p-2.5 bg-slate-200 rounded-2xl border-gray-600 text-black resize-none overflow-hidden"
+            placeholder="Send a message"
+            value={message}
+            onChange={handleChange}
+            rows={rows} // Dynamically adjust rows
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            className=" inset-y-0 end-0 flex items-center  disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Send Message"
+          >
+            {loading ? (
+              <span className="loading loading-spinner" />
+            ) : (
+              <Send className="text-white w-10 h-10 bg-primary rounded-full p-1 text-3xl" />
+            )}
+          </button>
+        </div>
       </div>
     </form>
   );

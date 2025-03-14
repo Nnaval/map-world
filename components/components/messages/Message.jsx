@@ -32,7 +32,7 @@ const Message = ({ message }) => {
         <p
           className={`rounded-xl px-3 py-2 ${bubbleBg} ${shakeClass} ${
             fromMe ? "text-white" : "text-black"
-          } text-sm md:text-md w-fit  leading-tight break-words`}
+          } text-sm md:text-md w-fit  leading-tight break-words whitespace-pre-wrap`}
         >
           {message.body}
         </p>
