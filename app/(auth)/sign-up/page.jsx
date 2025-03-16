@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { createUser } from "lib/actions/user.prisma";
+import Link from "next/link";
 
 const SignUp = () => {
   const router = useRouter();
@@ -67,6 +68,7 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Sign-up FOrm Values =", form);
 
     if (!validateForm()) return;
 
@@ -253,11 +255,11 @@ const SignUp = () => {
             onClick={handleSubmit}
             className={`w-full py-2 px-4 mt-6 rounded-lg ${
               isSubmitting
-                ? "bg-gray-500 cursor-not-allowed"
+                ? "bg-gray-500 cursor-wait"
                 : "bg-blue-600 hover:bg-blue-700 text-white"
             }`}
           >
-            {isSubmitting ? "Creating Account..." : "Sign-Up"}
+            {isSubmitting ? "Creating Account..." : "Create Account"}
           </button>
         </form>
         {submitError && (
@@ -265,6 +267,15 @@ const SignUp = () => {
             {submitError}
           </p>
         )}
+        <div className="flex gap-2 mt-3 justify-center">
+          <p className="">Already have an account ? </p>
+          <Link
+            href={"/login"}
+            className="text-primary font-semibold underline"
+          >
+            Login
+          </Link>
+        </div>
       </div>
     </div>
   );

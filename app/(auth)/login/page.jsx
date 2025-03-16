@@ -143,6 +143,15 @@ const LogIn = () => {
             Sign-In
           </button>
         </form>
+        <div className="flex text-sm gap-2 mt-3">
+          <p className="">Don't have an account ? </p>
+          <Link
+            href={"/sign-up"}
+            className="text-primary font-semibold underline"
+          >
+            Create an Account
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`border-r  border-slate-500 p-1 px-3 md:p-4 flex flex-col w-full lg:w-1/3 ${
+      className={`border-r mb-10 border-slate-500 p-1 px-3 md:p-4 flex flex-col w-full lg:w-1/3 ${
         selectedConversation && "hidden md:flex"
       }`}
     >

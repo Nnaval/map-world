@@ -32,7 +32,7 @@ const MessageInput = () => {
   };
 
   return (
-    <form className="z-30" onSubmit={handleSubmit}>
+    <form className="z-30 m-2" onSubmit={handleSubmit}>
       <div className="flex gap-1 relative">
         <div className="w-full flex gap-1 items-end  ">
           <textarea

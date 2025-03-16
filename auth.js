@@ -43,7 +43,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.kingdom = user.kingdom;
         token.bio = user.bio;
         token.about = user.about;
-        // token.department = user.department
+        token.department = user.department;
+        token.level = user.level;
+        token.gender = user.gender;
       }
       // console.log("JWT callback:", token);
       return token;
@@ -60,6 +62,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.kingdom = token.kingdom;
         session.user.about = token.about;
         session.user.bio = token.bio;
+        session.user.department = token.department;
+        session.user.level = token.level;
+        session.user.gender = token.gender;
       }
       console.log("session after modification", session.user);
       return session;

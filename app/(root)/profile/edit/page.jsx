@@ -15,14 +15,31 @@ import {
   SelectValue,
 } from "@components/ui/select";
 import { departments } from "constants/arrays";
+import { Check, ChevronsUpDown } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@components/ui/popover";
+import { cn } from "@lib/utils";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@components/ui/command";
+import { RadioGroup, RadioGroupItem } from "@components/ui/radio-group";
 
 const EditProfile = () => {
   const { data: session } = useSession();
   const [user, setUser] = useState({});
   const router = useRouter();
-  // const location = useRealTimeLocation();
   const [loading, setLoading] = useState(false);
   const [wasNewImageUploaded, setWasNewImageUploaded] = useState(false);
+
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const fetchUserFxn = async () => {
@@ -41,6 +58,7 @@ const EditProfile = () => {
     img: "",
     bio: "",
     about: "",
+    gender: "",
     department: "",
     level: "",
     latitude: "",
@@ -51,9 +69,10 @@ const EditProfile = () => {
     if (session) {
       setForm({
         name: form.name || session.user.name || "",
-        img: form.img || session.user.image||  "",
+        img: form.img || session.user.image || "",
         bio: form.bio || session.user.bio || "",
         about: form.about || session.user.about || "",
+        gender: form.gender || session.user.gender || "male",
         department: form.department || session.user.department || "",
         level: form.level || session.user.level || "",
         latitude:
@@ -108,11 +127,11 @@ const EditProfile = () => {
         }));
       }
 
-      console.log("Location", form.kingdom);
       const success = await updateUser(id, {
         name: form.name,
         about: form.about,
         bio: form.bio,
+        gender: form.gender,
         departmentName: form.department,
         levelName: form.level,
         latitude: parseFloat(form.latitude),
@@ -158,21 +177,13 @@ const EditProfile = () => {
       reader.onerror = (error) => reject(error);
     });
   };
-  const [searchQuery, setSearchQuery] = useState("");
 
-  // Filtered departments based on search query
-  const filteredDepartments = departments.filter((department) =>
-    department.toLowerCase().includes(searchQuery.toLowerCase())
-  );
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center px-4 py-6">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center px-4 py-6 mb-10">
       <div className="relative w-full max-w-2xl">
         <h1 className="text-center text-2xl font-bold text-gray-800">
           My Profile
         </h1>
-        <button className="absolute top-0 right-0 text-blue-500 hover:text-blue-600">
-          <MdModeEdit />
-        </button>
       </div>
 
       <div className="mt-6">
@@ -224,7 +235,7 @@ const EditProfile = () => {
             />
           </div>
 
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label
               htmlFor="bio"
               className="block text-gray-700 font-medium mb-2"
@@ -240,7 +251,7 @@ const EditProfile = () => {
               value={form.bio}
               onChange={handleChange}
             />
-          </div>
+          </div> */}
 
           <div className="mb-4">
             <label
@@ -249,13 +260,27 @@ const EditProfile = () => {
             >
               Gender
             </label>
-            <input
-              type="text"
-              id="gender"
-              name="gender"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your gender"
-            />
+
+            <RadioGroup
+              onValueChange={(value) =>
+                setForm((prev) => ({
+                  ...prev,
+                  gender: value, // Ensure you're updating 'gender', not 'department'
+                }))
+              }
+              defaultValue={form.gender}
+            >
+              <div className="flex gap-6">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="male" id="male" />
+                  <label htmlFor="male">Male</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="female" id="female" />
+                  <label htmlFor="female">Female</label>
+                </div>
+              </div>
+            </RadioGroup>
           </div>
           <div className="mb-4">
             <label
@@ -279,40 +304,51 @@ const EditProfile = () => {
             <label htmlFor="department" className="text-sm text-slate-700">
               Department
             </label>
-            <Select
-              value={form.department}
-              onValueChange={(value) =>
-                setForm((prev) => ({ ...prev, department: value }))
-              }
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select your Department" />
-              </SelectTrigger>
-              <SelectContent>
-                {/* Search Input */}
-                <div className="px-2 py-1">
-                  <input
-                    type="text"
-                    placeholder="Search department..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-2 py-1 border border-gray-300 rounded-md text-black"
-                  />
-                </div>
-                {/* Department Items */}
-                {filteredDepartments.length > 0 ? (
-                  filteredDepartments.map((department) => (
-                    <SelectItem key={department} value={department}>
-                      {department}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <div className="px-2 py-1 text-sm text-gray-500">
-                    No departments found.
-                  </div>
-                )}
-              </SelectContent>
-            </Select>
+
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <button
+                  aria-expanded={open}
+                  className="w-full justify-between flex items-center border p-2 rounded-md"
+                >
+                  {form.department || "Select department"}
+                  <ChevronsUpDown className="opacity-50 ml-auto" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-full p-0">
+                <Command>
+                  <CommandInput placeholder="Search department..." />
+                  <CommandList>
+                    <CommandEmpty>Department Not Found.</CommandEmpty>
+                    <CommandGroup>
+                      {departments.map((department) => (
+                        <CommandItem
+                          key={department}
+                          value={department}
+                          onSelect={() => {
+                            setForm((prev) => ({
+                              ...prev,
+                              department,
+                            }));
+                            setOpen(false);
+                          }}
+                        >
+                          {department}
+                          <Check
+                            className={cn(
+                              "ml-auto",
+                              form.department === department
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="w-full">
@@ -328,7 +364,7 @@ const EditProfile = () => {
               <SelectTrigger className="md:max-w-[50%] bg-dark-1 border-primary-500 outline-none">
                 <SelectValue placeholder="Level" />
               </SelectTrigger>
-              <SelectContent className="bg-dark-1  text-white border-primary-500">
+              <SelectContent className=" border-primary-500">
                 {[
                   "100",
                   "200",

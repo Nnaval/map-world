@@ -4,6 +4,7 @@ import { fetchAllShops, filterShops } from "@lib/actions/shops.prisma";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { IoIosLogOut } from "react-icons/io";
 
 const Shops = () => {
   const [shops, setShops] = useState([]);
@@ -48,11 +49,11 @@ const Shops = () => {
   };
 
   return (
-    <div>
-      <div className="flex items-end gap-5 bg-[#d48133] backdrop-blur-lg px-10 py-5 rounded-t-lg">
+    <div className="mb-10">
+      <div className="flex items-end gap-5 bg-primary backdrop-blur-lg px-10 py-5 rounded-b-2xl">
         <div className="w-full">
-          <p className="text-amber-950 font-bold">
-            A better heading here right ?
+          <p className="text-white font-bold">
+            Explore All Stores in the Market Place
           </p>
           <input
             type="text"
@@ -69,25 +70,37 @@ const Shops = () => {
             className="flex flex-col py-2 bg-slate-200 mb-4 p-4 rounded-lg"
             key={shop.name}
           >
-            <div className="flex gap-3 items-center">
-              <div className="w-14 h-14 relative rounded">
-                <Image
-                  src={
-                    shop?.image ||
-                    "https://randomuser.me/api/portraits/men/1.jpg"
-                  }
-                  alt="brand image"
-                  layout="fill"
-                  objectFit="cover"
-                />
+            <div className="flex items-center w-full">
+              <div className="flex gap-3 items-center border border-black  w-full">
+                <div className="w-16 h-16 relative rounded border border-black">
+                  <Image
+                    src={
+                      shop?.image ||
+                      "https://randomuser.me/api/portraits/men/1.jpg"
+                    }
+                    alt="brand image"
+                    // layout="fill"
+                    width={100}
+                    height={100}
+                    objectFit="contain"
+                  />
+                </div>
+                <div className="w-[80%]">
+                  <p className="tex">{shop.name}</p>
+                  <p>{shop.description}</p>
+                  <p className="text-black text-sm">
+                    Category:{" "}
+                    <span className="text-black">{shop.category}</span>
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-[#d48133]">{shop.name}</p>
-                <p>{shop.description}</p>
-                <p className="text-black">
-                  Category: <span className="text-black">{shop.category}</span>
-                </p>
-              </div>
+
+              <Link
+                href={`/shops/${shop.name}`}
+                className="bg-primary w-fit text-white rounded-full p-1 mt-3"
+              >
+                <IoIosLogOut className="text-3xl" />
+              </Link>
             </div>
 
             {/* Check if shopItems were matched */}
@@ -108,13 +121,6 @@ const Shops = () => {
                 </ul>
               </div>
             )}
-
-            <Link
-              href={`/shops/${shop.name}`}
-              className="bg-primary w-fit rounded-xl p-1 mt-3"
-            >
-              Visit Shop
-            </Link>
           </div>
         ))}
       </div>
