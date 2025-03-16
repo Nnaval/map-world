@@ -64,15 +64,15 @@ const Shops = () => {
           />
         </div>
       </div>
-      <div className="flex flex-col p.-14 py-2  rounded-b-lg h-[65v] overflow-y-scrol">
+      <div className="flex flex-col p.-14 py-2  rounded-b-lg mx-1 h-[65v] overflow-y-scrol">
         {shops?.map((shop) => (
           <div
             className="flex flex-col py-2 bg-slate-200 mb-4 p-4 rounded-lg"
             key={shop.name}
           >
             <div className="flex items-center w-full">
-              <div className="flex gap-3 items-center border border-black  w-full">
-                <div className="w-16 h-16 relative rounded border border-black">
+              <div className="flex gap-3 items-center  -black  w-full">
+                <div className="w-16 h-16 relative rounded  border-black">
                   <Image
                     src={
                       shop?.image ||
@@ -86,9 +86,9 @@ const Shops = () => {
                   />
                 </div>
                 <div className="w-[80%]">
-                  <p className="tex">{shop.name}</p>
+                  <p className="font-bold text-ellipsis">{shop.name}</p>
                   <p>{shop.description}</p>
-                  <p className="text-black text-sm">
+                  <p className="text-slate-700 text-sm text-ellipsis">
                     Category:{" "}
                     <span className="text-black">{shop.category}</span>
                   </p>

@@ -1,12 +1,14 @@
 "use client";
+import Modal from "@components/modals/Modal";
 import { useCart } from "@components/providers/CartProvider";
-import { fetchProductById } from "@lib/actions/product.prisma";
+import { deleteProduct, fetchProductById } from "@lib/actions/product.prisma";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineArrowLeft } from "react-icons/ai";
+import { HiDotsVertical } from "react-icons/hi";
 import { toast } from "sonner";
 
 const products = [
@@ -31,6 +33,9 @@ const ProductDynamicPage = ({ params }) => {
   const router = useRouter();
   const { addToCart } = useCart();
   const productId = params.id.replace(/%20/g, " ");
+  const [deleteError, setdeleteError] = useState("");
+  const [deleteLoading, setdeleteLoading] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -52,6 +57,38 @@ const ProductDynamicPage = ({ params }) => {
     console.log("product.shopId", product);
     addToCart(product.shopId, item);
     toast("Items added to cart ✅");
+  };
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleDeleteProduct = async () => {
+    setdeleteError("");
+    setdeleteLoading(true);
+    try {
+      const success = await deleteProduct(productId);
+      if (success) {
+        router.back();
+      }
+      setdeleteError(
+        "There was a problem Deletinng this Product , Please try Again"
+      );
+    } catch (error) {
+      console.log("Error deleting product", error);
+    } finally {
+      setdeleteLoading(false);
+    }
   };
 
   if (loading) {
@@ -78,8 +115,47 @@ const ProductDynamicPage = ({ params }) => {
           onClick={() => router.back()}
         />
       </div>
+
+      <div className="flex fixed top-5 right-5 z-50 ">
+        <HiDotsVertical
+          className="rounded-full text-3xl text-black cursor-pointer"
+          onClick={() => setMenuOpen(!menuOpen)}
+        />
+
+        {menuOpen && (
+          <div
+            ref={menuRef}
+            className="absolute right-5 top-3 mt-2 w-52 bg-white shadow-md rounded-md "
+          >
+            <Link
+              href={`${params.id}/edit`}
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+            >
+              Edit Product
+            </Link>
+            <button
+              onClick={() => setOpenDeleteModal(true)}
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
+            >
+              Delete Product
+            </button>
+            <button className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left">
+              Share Product
+            </button>
+            <Link
+              href={`/shops/${product.shop.name}`}
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
+            >
+              View Vendor's Store
+            </Link>
+            <button className="block px-4 py-2 text-red-600 hover:bg-gray-100 w-full text-left">
+              Flag Product
+            </button>
+          </div>
+        )}
+      </div>
       {/* recent changes */}
-      <div className="w-full flex justify-center bg-gray-100 p-6 relative h-[40vh]">
+      <div className="w-full flex justify-center bg-gray-100 p-6 relative h-[40vh] ">
         <Image
           src={product.image}
           alt={product.name}
@@ -87,14 +163,6 @@ const ProductDynamicPage = ({ params }) => {
           objectFit="contain" /* Ensures the image covers the entire space */
           className=""
         />
-      </div>
-      <div className="flex  w-full items-end justify-end">
-        <Link
-          href={`${params.id}/edit`}
-          className="flex  items-end bg-primary p-2 rounded-lg shadow-md"
-        >
-          <p className="text-white">Edit Product</p>
-        </Link>
       </div>
 
       <div className="p-4 w-full">
@@ -177,6 +245,44 @@ const ProductDynamicPage = ({ params }) => {
           ))}
         </div>
       </div>
+
+      {openDeleteModal && (
+        <Modal
+          open={openDeleteModal}
+          onClose={() => setOpenDeleteModal(false)}
+          width="350px"
+          height="fit"
+          className="border"
+        >
+          <div className=""></div>
+          <h6 className="text-lg font-semibold text-center">Delete Product</h6>
+          <div className="flex flex-col gap-4 items-center justify-center">
+            <p className="text-sm text-slate-700 text-center">
+              Are you sure you want to complete this action?
+              <p className=" text-slate-700 text-center">
+                This action cannot be undone
+              </p>
+            </p>
+            {deleteError && (
+              <p className="text-[10px] text-red-600">{deleteError}</p>
+            )}
+            <div className="flex gap-2 text-sm">
+              <button
+                onClick={() => handleDeleteProduct()}
+                className="bg-blue-600 p-1 rounded-lg px-4"
+              >
+                {deleteLoading ? "Deleting.." : "Delete"}
+              </button>
+              <button
+                className="bg-transparent border border-primary text-black p-1 rounded-lg px-4"
+                onClick={() => setOpenLogOutModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

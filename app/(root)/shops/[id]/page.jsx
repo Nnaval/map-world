@@ -3,7 +3,7 @@ import Image from "next/image";
 import { AiOutlineArrowLeft, AiOutlineBell } from "react-icons/ai";
 import { useParams } from "next/navigation";
 import { fetchUserShopById } from "@lib/actions/shops.prisma";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCesiumViewer } from "@components/providers/CesiumViewerProvider";
 import { useRouter } from "next/navigation";
 import { FaCamera } from "react-icons/fa";
@@ -24,6 +24,7 @@ import { MdEdit } from "react-icons/md";
 import AddMediaStatusDrawer from "@components/drawers/AddMediaStatusDrawer";
 import Link from "next/link";
 import socket from "@components/socket/Socket";
+import { HiDotsVertical } from "react-icons/hi";
 
 const ShopDynamicPage = ({ params }) => {
   const { id } = useParams();
@@ -129,6 +130,20 @@ const ShopDynamicPage = ({ params }) => {
       .toFixed(2);
   };
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const filteredItems =
     searchTerm.trim() === ""
       ? shop?.shopItems || []
@@ -158,12 +173,6 @@ const ShopDynamicPage = ({ params }) => {
         <div className="absolute top-4 left-4 text-2xl cursor-pointer">
           <AiOutlineArrowLeft />
         </div>
-        <div
-          className="absolute top-4 right-4 text-2xl cursor-pointer"
-          onClick={pushToRelativeMap}
-        >
-          <CiLocationOn />
-        </div>
 
         <h2 className="text-lg font-bold">{shopId}</h2>
         <p className="text-sm text-slate-200">{shop?.description}</p>
@@ -188,6 +197,44 @@ const ShopDynamicPage = ({ params }) => {
           )}
         </div>
       </div>
+      <div className="flex fixed top-5 right-5 ">
+        <HiDotsVertical
+          className="rounded-full text-3xl text-white cursor-pointer"
+          onClick={() => setMenuOpen(!menuOpen)}
+        />
+
+        {menuOpen && (
+          <div
+            ref={menuRef}
+            className="absolute right-5 top-3 mt-2 w-52 bg-white shadow-md rounded-md "
+          >
+            <Link
+              href="/profile/edit"
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+            >
+              Edit Store details
+            </Link>
+            <Link
+              href={`${params.id}/add`}
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+            >
+              Add Products
+            </Link>
+            <button className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left">
+              Share Store Profile
+            </button>
+            <button
+              onClick={() => pushToRelativeMap}
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
+            >
+              View Store in Map
+            </button>
+            <button className="block px-4 py-2 text-red-600 hover:bg-gray-100 w-full text-left">
+              Report Store (N/A)
+            </button>
+          </div>
+        )}
+      </div>
       {shop && (
         <StatusDrawer
           open={showDrawer}
@@ -197,15 +244,6 @@ const ShopDynamicPage = ({ params }) => {
           status={shop?.statuses}
         />
       )}
-
-      <div className="flex items-end justify-end">
-        <Link
-          href={`${params.id}/add`}
-          className="flex  items-end bg-primary p-2 rounded-lg shadow-md"
-        >
-          <p className="text-white">Add Product</p>
-        </Link>
-      </div>
 
       <div className="mt-5 px-4">
         <div className="flex w-full justify-around mb-4 border-b">
