@@ -1,7 +1,7 @@
 import { useCesiumViewer } from "@components/providers/CesiumViewerProvider";
 import { useLocation } from "@components/providers/LocationProvider";
 import { useSocket } from "@components/providers/SocketProvider";
-import { Cartesian3, Color } from "cesium";
+import { Cartesian3, Color, Transforms } from "cesium";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useRef } from "react";
 
@@ -29,6 +29,7 @@ export const AddUserMarkerToMap = () => {
       markerIdRef.current = socketBasedId;
 
       const position = Cartesian3.fromDegrees(longitude, latitude);
+      const modelMatrix = Transforms.eastNorthUpToFixedFrame(position);
 
       // Check if the user's marker already exists and update its position
       const existingEntity = viewer.entities.getById(markerIdRef.current);
@@ -43,6 +44,11 @@ export const AddUserMarkerToMap = () => {
             username: username,
             type: "user",
             coordinates: { longitude, latitude },
+          },
+          model: {
+            uri: "/models/walk.glb", // Model file
+            modelMatrix: modelMatrix,
+            scale: 10,
           },
           point: { pixelSize: 20, color: Color.RED },
         });
@@ -106,6 +112,7 @@ export const DisplayAllUserMarkers = () => {
             if (username === session?.user.username) return;
             // if (socketId === socket.id) return;
             const position = Cartesian3.fromDegrees(longitude, latitude);
+            const modelMatrix = Transforms.eastNorthUpToFixedFrame(position);
             const existingEntity = viewer.entities.getById(`user-${socketId}`);
             if (existingEntity) {
               existingEntity.position = position;
@@ -120,6 +127,11 @@ export const DisplayAllUserMarkers = () => {
                   coordinates: { longitude, latitude },
                 },
                 point: { pixelSize: 30, color: Color.BLUE },
+                model: {
+                  uri: "/models/walk.glb", // Model file
+                  modelMatrix: modelMatrix,
+                  scale: 5,
+                },
               });
             }
           }

@@ -455,19 +455,19 @@ export const flytoDestination = (viewer, lon, lat) => {
   // Compute the quaternion for the orientation based on position
   const orientation = Transforms.headingPitchRollQuaternion(position, hpr);
 
-  const pointerEntity = viewer.entities.add({
-    position: Cartesian3.fromDegrees(lon, lat, pointerHeightOffset), // Add a height offset
-    orientation: orientation, // Set the orientation
-    model: {
-      uri: "/models/pointer.glb", // Path or URL to your 3D model file
-      scale: 1.0, // Scale the model if needed
-      minimumPixelSize: 64, // Ensures the model is visible even at lower zoom levels
-      maximumScale: 200, // Optional: to limit scaling at higher zoom
-    },
-  });
+  // const pointerEntity = viewer.entities.add({
+  //   position: Cartesian3.fromDegrees(lon, lat, pointerHeightOffset), // Add a height offset
+  //   orientation: orientation, // Set the orientation
+  //   model: {
+  //     uri: "/models/pointer.glb", // Path or URL to your 3D model file
+  //     scale: 1.0, // Scale the model if needed
+  //     minimumPixelSize: 64, // Ensures the model is visible even at lower zoom levels
+  //     maximumScale: 200, // Optional: to limit scaling at higher zoom
+  //   },
+  // });
 
   // Optionally, zoom to the new entity
-  viewer.zoomTo(pointerEntity);
+  // viewer.zoomTo(pointerEntity);
 };
 
 export const userModelAdd = (viewer, long, lat) => {

@@ -77,7 +77,7 @@ const UserInfoModal = ({ showModal, setShowModal, userInfo }) => {
             <p className="text-slate-300 text-sm">{user.username}</p>
             <p className="">{user?.department?.name}</p>
             <p className="">{user?.level?.name} Level</p>
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2">
               <Link
                 href={`/profile/${user?.username}`}
                 className="bg-primary text-sm text-white p-1 rounded-lg px-4 "
@@ -85,22 +85,26 @@ const UserInfoModal = ({ showModal, setShowModal, userInfo }) => {
               >
                 View Profile
               </Link>
-              <Link
-                href={`/chat?receiverId=${user?.id}`}
-                className="bg-primary-500 text-sm text-white p-1 rounded-lg px-4 "
-                // onClick={handleEnterShop}
-              >
-                <FaRegEnvelope className="text-2xl text-primary" />
-              </Link>
-              <p
-                className="flex flex-col gap-1 items-center text-sm"
-                onClick={() =>
-                  drawLineBetweenPoints(viewer, userLocation, endLocation)
-                }
-              >
-                <FaDirections className="text-primary text-3xl bg-white rounded-full p-1" />
-                Directions
-              </p>
+
+              <div className="flex gap-2">
+                <Link
+                  href={`/chat?receiverId=${user?.id}`}
+                  className="bg-primary-500 flex items-center flex-col text- p-1 rounded-lg px-4 "
+                  // onClick={handleEnterShop}
+                >
+                  <FaRegEnvelope className="text-2xl text-primary" />
+                  Message
+                </Link>
+                <p
+                  className="flex flex-col gap-1 items-center text-sm"
+                  onClick={() =>
+                    drawLineBetweenPoints(viewer, userLocation, endLocation)
+                  }
+                >
+                  <FaDirections className="text-primary text-3xl bg-white rounded-full p-1" />
+                  Directions
+                </p>
+              </div>
             </div>
           </div>
         </>

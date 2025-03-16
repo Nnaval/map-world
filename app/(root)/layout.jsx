@@ -9,6 +9,7 @@ import { LocationProvider } from "@components/providers/LocationProvider";
 import { CesiumViewerProvider } from "@components/providers/CesiumViewerProvider";
 import { Toaster } from "sonner";
 import { CartProvider } from "@components/providers/CartProvider";
+import CesiumMapB from "@components/cesium/Cesium";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +33,7 @@ export default function RootLayout({ children }) {
                         <div className="">{children}</div>
                         <Toaster />
                         <ButtomNav />
+                        <CesiumMapB />
                       </main>
                     </CartProvider>
                   </CesiumViewerProvider>
