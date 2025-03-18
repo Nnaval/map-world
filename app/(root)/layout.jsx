@@ -30,10 +30,10 @@ export default function RootLayout({ children }) {
                   <CesiumViewerProvider>
                     <CartProvider>
                       <main className="bg-light">
-                        <div className="">{children}</div>
+                        <div className="bg-gradient-to-b from-blue-100 to-red-100">{children}</div>
                         <Toaster />
                         <ButtomNav />
-                        <CesiumMapB />
+                        {/* <CesiumMapB /> */}
                       </main>
                     </CartProvider>
                   </CesiumViewerProvider>
