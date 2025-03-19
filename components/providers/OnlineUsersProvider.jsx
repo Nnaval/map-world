@@ -12,7 +12,7 @@ export const OnlineUsersProvider = ({ children }) => {
   useEffect(() => {
     const handleOnlineUsersUpdate = (users) => {
       setOnlineUsers(users);
-      console.log("online users =", onlineUsers);
+      // console.log("online users =", onlineUsers);
     };
 
     socket.on("update_online_user", handleOnlineUsersUpdate);

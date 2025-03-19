@@ -81,7 +81,7 @@ const loadAndAlignTileset = async (viewer, assetId) => {
 export const loadNewBuildingTileset = async (cesiumViewer) => {
   // Array of tileset IDs and corresponding names for better debugging
   const tilesets = [
-    { id: 3220424, name: "map" },
+    // { id: 3220424, name: "map" },
     { id: 2593928, name: "senate" },
     { id: 2593447, name: "roundabout" },
     { id: 2975229, name: "NDDC" },
@@ -123,13 +123,13 @@ export const loadNewBuildingTileset = async (cesiumViewer) => {
   try {
     // Load all tilesets sequentially to ensure smooth loading and debug visibility
     for (const { id, name } of tilesets) {
-      console.log(`Loading tileset: ${name} (ID: ${id})`);
+      // console.log(`Loading tileset: ${name} (ID: ${id})`);
       const tileset = await Cesium3DTileset.fromIonAssetId(id);
       cesiumViewer.scene.primitives.add(tileset);
 
       // Wait for the tileset to be ready before proceeding
       await tileset.readyPromise;
-      console.log(`Successfully loaded tileset: ${name}`);
+      // console.log(`Successfully loaded tileset: ${name}`);
       // await alignTilesetBaseToGround(tileset);
 
       // Adjust height offset
@@ -237,7 +237,7 @@ export const load3DModel = async (cesiumViewer, shopName, lon, lat, tileId) => {
   const modelMatrix = Transforms.eastNorthUpToFixedFrame(position);
 
   const model = await Model.fromGltfAsync({
-    uri: "/shops/food_shop.glb", // Model file
+    url: "/shops/food_shop.glb", // Model file
     modelMatrix: modelMatrix,
     scale: 2,
   });
@@ -263,7 +263,7 @@ export const load3DModel = async (cesiumViewer, shopName, lon, lat, tileId) => {
       coordinates: { lon, lat }, // Store coordinates for reference
     },
     model: {
-      uri: "/shops/food_shop.glb", // Model file
+      url: "/shops/food_shop.glb", // Model file
       modelMatrix: modelMatrix,
       scale: 2,
     },
