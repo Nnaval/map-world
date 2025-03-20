@@ -9,6 +9,8 @@ import {
   Color,
   ColorMaterialProperty,
   JulianDate,
+  Model,
+  Transforms,
 } from "cesium";
 
 import "cesium/Build/Cesium/Widgets/widgets.css";
@@ -106,6 +108,49 @@ const CesiumMapB = () => {
         };
 
         flyToLocationFromURL();
+
+        const longitude = 6.9955297993; // Replace with your exact coordinates
+        const latitude = 5.3823293861;
+        const altitude = 0.1; // Adjust altitude as needed
+
+        // const loadTerrain = async () => {
+        //   try {
+        //     const terrainModel = await viewer.scene.primitives.add(
+        //       Model.fromGltfAsync({
+        //         url: "https://futo-terrain-a0rzcqp6z-emmanuel-xts-projects.vercel.app/fmap10.glb",
+        //         modelMatrix: Transforms.eastNorthUpToFixedFrame(
+        //           Cartesian3.fromDegrees(longitude, latitude, altitude)
+        //         ),
+        //         scale: 1.0,
+        //       })
+        //     );
+        //     // viewer.scene.primitives.add(terrainModel);
+        //     console.log("Model suppose don dey show", terrainModel);
+        //   } catch (error) {
+        //     console.error("Failed to load terrain model:", error);
+        //   }
+        // };
+        // await loadTerrain();
+
+        const loadTerrain = async () => {
+          try {
+            const terrainModel = await Model.fromGltfAsync({
+              url: "/models/fmap10.glb", // Loads from Next.js public folder
+              modelMatrix: Transforms.eastNorthUpToFixedFrame(
+                Cartesian3.fromDegrees(longitude, latitude, altitude)
+              ),
+              scale: 1.0,
+            });
+
+            viewer.scene.primitives.add(terrainModel);
+            console.log("Model loaded successfully", terrainModel);
+          } catch (error) {
+            console.error("Failed to load terrain model:", error);
+          }
+        };
+
+        // Call the function
+        await loadTerrain();
 
         loadNewBuildingTileset(viewer);
 
