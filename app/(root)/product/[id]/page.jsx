@@ -1,7 +1,9 @@
 "use client";
 import Modal from "@components/modals/Modal";
 import { useCart } from "@components/providers/CartProvider";
+import { generateProfileLink } from "@constants/functions";
 import { deleteProduct, fetchProductById } from "@lib/actions/product.prisma";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -36,6 +38,10 @@ const ProductDynamicPage = ({ params }) => {
   const [deleteError, setdeleteError] = useState("");
   const [deleteLoading, setdeleteLoading] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const { data: session } = useSession();
+  const userId = session?.user.id;
+
+  const isProductMyOwn = product?.shop?.userId == userId;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -51,6 +57,7 @@ const ProductDynamicPage = ({ params }) => {
     };
     fetchProduct();
   }, [productId]);
+  console.log("PrOdUct ", product);
 
   const handleAddToCart = (item) => {
     // console.log("item", item);
@@ -127,19 +134,26 @@ const ProductDynamicPage = ({ params }) => {
             ref={menuRef}
             className="absolute right-5 top-3 mt-2 w-52 bg-white shadow-md rounded-md "
           >
-            <Link
-              href={`${params.id}/edit`}
-              className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-            >
-              Edit Product
-            </Link>
+            {isProductMyOwn && (
+              <>
+                <Link
+                  href={`${params.id}/edit`}
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Edit Product
+                </Link>
+                <button
+                  onClick={() => setOpenDeleteModal(true)}
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
+                >
+                  Delete Product
+                </button>
+              </>
+            )}
             <button
-              onClick={() => setOpenDeleteModal(true)}
               className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
+              onClick={() => generateProfileLink()}
             >
-              Delete Product
-            </button>
-            <button className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left">
               Share Product
             </button>
             <Link

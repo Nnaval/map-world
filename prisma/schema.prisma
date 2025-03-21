@@ -28,6 +28,7 @@ model User {
   orders       Order[]
   posts        Post[]
   shops        Shop[]
+  shopItem     ShopItem[]
   department   Department?  @relation(fields: [departmentId], references: [id])
   level        Level?       @relation(fields: [levelId], references: [id])
   statuses     UserStatus[]
@@ -152,10 +153,12 @@ model ShopItem {
   price       Float
   image       String
   description String
-  shopId      Int
   tag         String?
   quantity    Int?    @default(1)
-  shop        Shop    @relation(fields: [shopId], references: [id])
+  shopId      Int?
+  shop        Shop?   @relation(fields: [shopId], references: [id])
+  userId      Int?
+  user        User?   @relation(fields: [userId], references: [id])
 }
 
 model Order {

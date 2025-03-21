@@ -16,7 +16,7 @@ import Link from "next/link";
 const MessageContainer = () => {
   const { setSelectedConversation, selectedConversation } = useConversation();
   const onlineUsers = useOnlineUsers();
-  console.log("Online users for COnversation", selectedConversation);
+  // console.log("Online users for COnversation", selectedConversation);
   const isUserActive = onlineUsers.find(
     (onlineUser) => onlineUser.userId === selectedConversation?.id
   );
@@ -83,8 +83,11 @@ const MessageContainer = () => {
                 ref={menuRef}
                 className="absolute right-5 top-3 mt-2 w-40 bg-white shadow-md rounded-md z-50 "
               >
+                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">
+                  Search (N/A)
+                </button>
                 <Link
-                  href={`/chat?receiverId=${selectedConversation?.username}`}
+                  href={`/profile/${selectedConversation?.username}`}
                   className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                 >
                   View Profile

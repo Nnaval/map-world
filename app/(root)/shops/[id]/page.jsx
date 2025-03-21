@@ -7,7 +7,10 @@ import { useEffect, useRef, useState } from "react";
 import { useCesiumViewer } from "@components/providers/CesiumViewerProvider";
 import { useRouter } from "next/navigation";
 import { FaCamera } from "react-icons/fa";
-import { drawLineBetweenPoints } from "@constants/functions";
+import {
+  drawLineBetweenPoints,
+  generateProfileLink,
+} from "@constants/functions";
 import { userLocation } from "@constants/userDat";
 
 import { shopCategories } from "@constants/arrays";
@@ -25,55 +28,26 @@ import AddMediaStatusDrawer from "@components/drawers/AddMediaStatusDrawer";
 import Link from "next/link";
 import socket from "@components/socket/Socket";
 import { HiDotsVertical } from "react-icons/hi";
+import { useSession } from "next-auth/react";
 
 const ShopDynamicPage = ({ params }) => {
-  const { id } = useParams();
-
-  // Dummy Data
-  const shopInfo = {
-    name: "Name of Business",
-    description: "Business Description",
-    profileImage: "/assets/IceHomeImage1.jpg", // Replace with actual image
-    orders: 13,
-    products: [
-      "/assets/IceHomeImage1.jpg",
-      "/assets/pricelogo.png",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-      "/assets/IceHomeImage1.jpg",
-    ],
-  };
-  const router = useRouter();
   const shopId = params.id.replace(/%20/g, " ");
   const [shop, setShop] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showEditModal, setShowEditModal] = useState(false);
   const { viewer, viewerReady, setMapVisible } = useCesiumViewer();
-  const [wasNewImageUploaded, setWasNewImageUploaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
   const [openTextStatusModal, setOpenTextStatusModal] = useState(false);
   const [loadingShop, setLoadingShop] = useState(true); // Initial loading state set to true
   const onlineShops = useOnlineShops();
-  // console.log("Online users for Profile", onlineShops);
+  const { data: session } = useSession();
+  const userId = session?.user.id;
 
+  const isShopMyOwn = shop?.userId == userId;
   const isShopActive = onlineShops.some((shop) => shop.name === shopId);
-  // const { toast } = useToast();
+
+  console.log("Is shop my own ", shop);
+
   const [activeTab, setActiveTab] = useState("product");
   const [orders, setOrders] = useState([]);
 
@@ -86,6 +60,7 @@ const ShopDynamicPage = ({ params }) => {
       try {
         const fetchedShop = await fetchUserShopById(shopId);
         setShop(fetchedShop);
+        console.log("fetched shop to check if shop is min ", fetchedShop);
       } catch (error) {
         console.error("Error fetching shop:", error);
       } finally {
@@ -114,7 +89,8 @@ const ShopDynamicPage = ({ params }) => {
       longitude: shop.longitude,
       latitude: shop.latitude,
     };
-    drawLineBetweenPoints(viewer, userLocation, shopLocation);
+    // drawLineBetweenPoints(viewer, userLocation, shopLocation);
+    flytoDestination(viewer, shop.longitude, shop.latitude);
   };
 
   const handleSearch = (e) => {
@@ -210,19 +186,34 @@ const ShopDynamicPage = ({ params }) => {
             ref={menuRef}
             className="absolute right-5 top-3 mt-2 w-52 bg-white shadow-md rounded-md "
           >
-            <Link
-              href="/profile/edit"
-              className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+            {isShopMyOwn ? (
+              <>
+                <Link
+                  href="/profile/edit"
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Edit Store details
+                </Link>
+                <Link
+                  href={`${params.id}/add`}
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  Add Products
+                </Link>
+              </>
+            ) : (
+              <Link
+                href={`/chat?receiverId=${shop?.userId}`}
+                className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                Message store owner
+              </Link>
+            )}
+
+            <button
+              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
+              onClick={() => generateProfileLink()}
             >
-              Edit Store details
-            </Link>
-            <Link
-              href={`${params.id}/add`}
-              className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-            >
-              Add Products
-            </Link>
-            <button className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left">
               Share Store Profile
             </button>
             <button
