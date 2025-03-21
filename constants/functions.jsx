@@ -548,6 +548,14 @@ export const generateLocationLink = (longitude, latitude) => {
     .then(() => toast("Link copied! Share it with others."))
     .catch((err) => console.error("Failed to copy link:", err));
 };
+export const generateProfileLink = () => {
+  const baseUrl = window.location.origin + window.location.pathname;
+
+  navigator.clipboard
+    .writeText(baseUrl)
+    .then(() => toast("Link copied! Share it with others."))
+    .catch((err) => console.error("Failed to copy link:", err));
+};
 
 export function extractTime(dateString) {
   const date = new Date(dateString);

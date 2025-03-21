@@ -8,10 +8,32 @@ import { MessageCircle } from "lucide-react";
 import { BsBack } from "react-icons/bs";
 import { IoMdArrowBack } from "react-icons/io";
 import Image from "next/image";
+import { useOnlineUsers } from "@components/providers/OnlineUsersProvider";
+import { useEffect, useRef, useState } from "react";
+import { HiDotsVertical } from "react-icons/hi";
+import Link from "next/link";
 
 const MessageContainer = () => {
   const { setSelectedConversation, selectedConversation } = useConversation();
+  const onlineUsers = useOnlineUsers();
+  console.log("Online users for COnversation", selectedConversation);
+  const isUserActive = onlineUsers.find(
+    (onlineUser) => onlineUser.userId === selectedConversation?.id
+  );
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   return (
     <div
       className={`w-full flex flex-col bg-white z-20 ${
@@ -30,7 +52,7 @@ const MessageContainer = () => {
               className="text-xl"
               onClick={() => setSelectedConversation(null)}
             />
-            <div className="w-10 h-10 border rounded-full">
+            <div className="w-10 h-10 border rounded-full relative">
               <Image
                 alt="profile"
                 src={
@@ -41,10 +63,52 @@ const MessageContainer = () => {
                 height={20}
                 className="w-10 h-10  rounded-full"
               />
+              {isUserActive && (
+                <div className="w-3 h-3 bg-green-500 border-2 border-white rounded-full absolute top-0 right-0"></div>
+              )}
             </div>
             <span className="text-gray-900 font-bold">
               {selectedConversation.name}
             </span>
+          </div>
+
+          <div className="flex fixed top-5 right-5 z-50 ">
+            <HiDotsVertical
+              className="rounded-full text-3xl cursor-pointer"
+              onClick={() => setMenuOpen(!menuOpen)}
+            />
+
+            {menuOpen && (
+              <div
+                ref={menuRef}
+                className="absolute right-5 top-3 mt-2 w-40 bg-white shadow-md rounded-md z-50 "
+              >
+                <Link
+                  href={`/chat?receiverId=${selectedConversation?.username}`}
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  View Profile
+                </Link>
+
+                {isUserActive && (
+                  <Link
+                    href="/map"
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    View in Map(N/A)
+                  </Link>
+                )}
+                {/* <button
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
+                  onClick={() => generateProfileLink()}
+                >
+                  Share Profile
+                </button> */}
+                <button className="block px-4 py-2 text-red-600 hover:bg-gray-100 w-full text-left">
+                  Block User (N/A)
+                </button>
+              </div>
+            )}
           </div>
 
           <Messages />

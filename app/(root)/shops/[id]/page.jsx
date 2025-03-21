@@ -70,6 +70,8 @@ const ShopDynamicPage = ({ params }) => {
   const [openTextStatusModal, setOpenTextStatusModal] = useState(false);
   const [loadingShop, setLoadingShop] = useState(true); // Initial loading state set to true
   const onlineShops = useOnlineShops();
+  // console.log("Online users for Profile", onlineShops);
+
   const isShopActive = onlineShops.some((shop) => shop.name === shopId);
   // const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("product");

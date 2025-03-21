@@ -1,6 +1,7 @@
 // import { useSocketContext } from "../../context/SocketContext";
 // import useConversation from "../../zustand/useConversation";
 
+import { useOnlineUsers } from "@components/providers/OnlineUsersProvider";
 import Image from "next/image";
 import useConversation from "zustand/useConversation";
 
@@ -9,9 +10,11 @@ const Conversation = ({ conversation, emoji }) => {
   const isSelected = selectedConversation?.id === conversation.id;
 
   // const { onlineUsers } = useSocketContext();
-  const onlineUsers = ["nobody"];
-
-  const isOnline = onlineUsers.includes(conversation.id);
+  const onlineUsers = useOnlineUsers();
+  // console.log("Online users for COnversation", onlineUsers);
+  const isUserActive = onlineUsers.find(
+    (onlineUser) => onlineUser.userId === conversation.id
+  );
 
   return (
     <>
@@ -20,8 +23,8 @@ const Conversation = ({ conversation, emoji }) => {
 				 py-1 cursor-pointer ${isSelected ? "md:bg-sky-500" : ""}`}
         onClick={() => setSelectedConversation(conversation)}
       >
-        <div className={`avatar ${isOnline ? "online" : ""}`}>
-          <div className="w-14 h-14 md:w-12 rounded-full">
+        <div className={`avatar ${isUserActive ? "online" : ""}`}>
+          <div className="w-14 h-14 md:w-12 rounded-full relative">
             <Image
               src={
                 conversation.picture ||
@@ -32,6 +35,9 @@ const Conversation = ({ conversation, emoji }) => {
               height={20}
               className="w-14 h-14 rounded-full"
             />
+            {isUserActive && (
+              <div className="w-3 h-3 bg-green-500 border-2 border-white rounded-full absolute top-0 right-1"></div>
+            )}
           </div>
         </div>
 
