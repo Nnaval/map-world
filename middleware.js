@@ -19,8 +19,8 @@ export async function middleware(req) {
 export const config = {
   matcher: [
     "/dashboard/:path*",
-    "/profile",
-    "/profile/edit",
-    "/profile/settings",
+    // "/profile",
+    // "/profile/edit",
+    // "/profile/settings",
   ],
 };
