@@ -8,7 +8,7 @@ const page = () => {
   return (
     <div>
       Map Page
-      {/* <CesiumMapB /> */}
+      <CesiumMapB />
     </div>
   );
 };

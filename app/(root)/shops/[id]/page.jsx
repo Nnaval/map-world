@@ -250,19 +250,32 @@ const ShopDynamicPage = ({ params }) => {
           >
             Products
           </button>
-          <button
-            className={`p-2 flex gap-2 items-center ${
-              activeTab === "requests"
-                ? "border-b-2 w-[150px] border-blue-500"
-                : ""
-            }`}
-            onClick={() => handleTabChange("requests")}
-          >
-            Requests{" "}
-            <p className="bg-primary text-white text-sm p-1 rounded-full">
-              {shop.orders.length}
-            </p>
-          </button>
+          {!isShopMyOwn ? (
+            <button
+              className={`p-2 ${
+                activeTab === "info"
+                  ? "border-b-2 w-[150px] border-blue-500"
+                  : ""
+              }`}
+              onClick={() => handleTabChange("info")}
+            >
+              Shop Profile
+            </button>
+          ) : (
+            <button
+              className={`p-2 flex gap-2 items-center ${
+                activeTab === "requests"
+                  ? "border-b-2 w-[150px] border-blue-500"
+                  : ""
+              }`}
+              onClick={() => handleTabChange("requests")}
+            >
+              Requests{" "}
+              <p className="bg-primary text-white text-sm p-1 rounded-full">
+                {shop.orders.length}
+              </p>
+            </button>
+          )}
         </div>
       </div>
       {/* recent changes */}
@@ -295,92 +308,104 @@ const ShopDynamicPage = ({ params }) => {
           </div>
         </div>
       )}
-      <div className="bg-slate-50">
-        {activeTab === "requests" &&
-          (orders && orders.length > 0 ? (
-            <div className="w-full">
-              {orders.map((order) => (
-                <>
-                  <p className="text-slate-600 font-semibold px-2 text-lg">
-                    {" "}
-                    {order.user.username}
-                  </p>
 
-                  <div
-                    key={order.id}
-                    className="p-2 border  mb-2 rounded-lg flex flex-col gap-1 items-center justify-between w-full"
-                  >
-                    {order.items.map((item, i) => (
-                      <div className="flex w-full bg-white" key={i}>
-                        <Image
-                          src={item.image || "/assets/IceHomeImage1.jpg"}
-                          alt={item.name}
-                          width={100}
-                          height={100}
-                          className="w-20 h-20 mr-4 rounded"
-                        />
-                        <div className="w-full flex flex-col gap-1">
-                          <div className="flex justify-between">
-                            <div className=" ">
-                              <h3 className="font-semibold">
-                                {item.name.length > 50
-                                  ? item.name.substring(0, 25) + "..."
-                                  : item.name}
-                              </h3>
-                              {/* <p className="text-sm text-slate-700">
+      {isShopMyOwn ? (
+        <div className="bg-slate-50">
+          {activeTab === "requests" &&
+            (orders && orders.length > 0 ? (
+              <div className="w-full">
+                {orders.map((order) => (
+                  <>
+                    <p className="text-slate-600 font-semibold px-2 text-lg">
+                      {" "}
+                      {order.user.username}
+                    </p>
+
+                    <div
+                      key={order.id}
+                      className="p-2 border  mb-2 rounded-lg flex flex-col gap-1 items-center justify-between w-full"
+                    >
+                      {order.items.map((item, i) => (
+                        <div className="flex w-full bg-white" key={i}>
+                          <Image
+                            src={item.image || "/assets/IceHomeImage1.jpg"}
+                            alt={item.name}
+                            width={100}
+                            height={100}
+                            className="w-20 h-20 mr-4 rounded"
+                          />
+                          <div className="w-full flex flex-col gap-1">
+                            <div className="flex justify-between">
+                              <div className=" ">
+                                <h3 className="font-semibold">
+                                  {item.name.length > 50
+                                    ? item.name.substring(0, 25) + "..."
+                                    : item.name}
+                                </h3>
+                                {/* <p className="text-sm text-slate-700">
                         {item.description.length > 50
                           ? item.description.substring(0, 50) + "..."
                           : item.description}
                       </p> */}
+                              </div>
                             </div>
-                          </div>
 
-                          <div className="flex  items-center justify-between">
-                            <p className="font-bold">
-                              ₦{item.price.toFixed(2)}
-                            </p>
-                            <p className="mx-2">x{item.quantity}</p>
-                            <div className="">
-                              <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2">
-                                Accept
-                              </button>
-                              <button className=" text-black border border-black  px-2 py-1 rounded">
-                                Reject
-                              </button>
+                            <div className="flex  items-center justify-between">
+                              <p className="font-bold">
+                                ₦{item.price.toFixed(2)}
+                              </p>
+                              <p className="mx-2">x{item.quantity}</p>
+                              <div className="">
+                                <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2">
+                                  Accept
+                                </button>
+                                <button className=" text-black border border-black  px-2 py-1 rounded">
+                                  Reject
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ))}
-            </div>
-          ) : (
-            <div className="h-20 text-slate-300 flex flex-col items-center justify-center">
-              <p>You Don&apos;t have any Pending Order</p>
-            </div>
-          ))}
-      </div>
-      <MdEdit
-        className="text-primary text-3xl fixed bottom-24 right-1"
-        onClick={() => setOpenTextStatusModal(true)}
-      />
-      <AddTextStatusDrawer
-        open={openTextStatusModal}
-        openChange={setOpenTextStatusModal}
-        shopId={shopId}
-      />
-      <label
-        htmlFor="status-media"
-        className=" fixed bottom-16 right-1 cursor-pointer"
-      >
-        <FaCamera
-          className="text-primary text-3xl "
-          // onClick={() => setOpenMediaStatusModal(true)}
-        />
-      </label>
-      <AddMediaStatusDrawer shopId={shopId} />
+                      ))}
+                    </div>
+                  </>
+                ))}
+              </div>
+            ) : (
+              <div className="h-20 text-slate-300 flex flex-col items-center justify-center">
+                <p>You Don&apos;t have any Pending Order</p>
+              </div>
+            ))}
+        </div>
+      ) : (
+        activeTab === "info" && <>Shop Info Here</>
+      )}
+
+      {isShopMyOwn && (
+        <>
+          <MdEdit
+            className="text-primary text-3xl fixed bottom-24 right-1"
+            onClick={() => setOpenTextStatusModal(true)}
+          />
+          {openTextStatusModal && (
+            <AddTextStatusDrawer
+              open={openTextStatusModal}
+              openChange={setOpenTextStatusModal}
+              shopId={shopId}
+            />
+          )}
+          <label
+            htmlFor="status-media"
+            className=" fixed bottom-16 right-1 cursor-pointer"
+          >
+            <FaCamera
+              className="text-primary text-3xl "
+              // onClick={() => setOpenMediaStatusModal(true)}
+            />
+          </label>
+          <AddMediaStatusDrawer shopId={shopId} />
+        </>
+      )}
     </div>
   );
 };

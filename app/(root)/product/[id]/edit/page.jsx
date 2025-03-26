@@ -9,6 +9,7 @@ import {
   fetchProductById,
   updateProductDetails,
 } from "@lib/actions/product.prisma";
+import { useSession } from "next-auth/react";
 
 const EditProductPage = ({ params }) => {
   const router = useRouter();
@@ -22,8 +23,10 @@ const EditProductPage = ({ params }) => {
     category: "",
     image: "",
   });
+  const [productOwner, setproductOwner] = useState(null);
 
   const [loading, setLoading] = useState(true);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -40,6 +43,7 @@ const EditProductPage = ({ params }) => {
           category: fetchedProduct.tag,
           image: fetchedProduct.image,
         });
+        setproductOwner(fetchedProduct.userId);
       } catch (error) {
         console.error("Error fetching product:", error);
       } finally {
@@ -128,6 +132,16 @@ const EditProductPage = ({ params }) => {
       <div className="flex justify-center items-center h-screen">
         Loading...
       </div>
+    );
+  }
+
+  if (productOwner != session?.user.id) {
+    return (
+      <p className="text-2xl">
+        Are you sure you are the owner of the Product you want to edit , We
+        found out what you were trying to do , and we strongly advise you dont
+        try it again
+      </p>
     );
   }
 

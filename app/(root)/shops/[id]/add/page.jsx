@@ -1,10 +1,13 @@
 "use client";
 import BackNav from "@components/BackNav";
-import { addShopItemsToShopId } from "@lib/actions/shops.prisma";
+import {
+  addShopItemsToShopId,
+  fetchShopandItsUserId,
+} from "@lib/actions/shops.prisma";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCamera } from "react-icons/fa6";
 
 const AddProductPage = ({ params }) => {
@@ -24,6 +27,16 @@ const AddProductPage = ({ params }) => {
     price: "",
     category: "",
   });
+
+  useEffect(() => {
+    const fetchTheStore = async () => {
+      const fetchedStore = await fetchShopandItsUserId(shopId);
+      setShop(fetchedStore);
+    };
+    fetchTheStore();
+  }, [shopId]);
+  // console.log("Params id =", shopId);
+  // console.log("SHop =", shop);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,7 +62,7 @@ const AddProductPage = ({ params }) => {
 
     // console.log("Submitting data:", dataToSubmit);
     try {
-      const result = await addShopItemsToShopId(shopId, product);
+      const result = await addShopItemsToShopId(shopId, product, userId);
       // console.log("items added successfully" , result)
       if (result.success) {
         router.back();
@@ -98,6 +111,16 @@ const AddProductPage = ({ params }) => {
       console.log("no form data");
     }
   };
+
+  if (shop.userId != session.user.id) {
+    return (
+      <p className="text-2xl">
+        Are you sure you are the owner of the shop you want to add Product to ,
+        We found out what you were trying to do , and we strongly advise you
+        dont try it again
+      </p>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center p-4">

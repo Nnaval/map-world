@@ -41,7 +41,7 @@ const ProductDynamicPage = ({ params }) => {
   const { data: session } = useSession();
   const userId = session?.user.id;
 
-  const isProductMyOwn = product?.shop?.userId == userId;
+  const isProductMyOwn = product?.userId == userId;
 
   useEffect(() => {
     const fetchProduct = async () => {
