@@ -43,6 +43,7 @@ import {
 import { useSocket } from "@components/providers/SocketProvider";
 import FindEntityModal from "@components/modals/FindEntityModal";
 import LabelModal from "@components/modals/LabelModal";
+import TerrainPositioner from "./TerrainPositioner";
 // import { useSocket } from "@components/socket/Socket";
 
 const CesiumMapB = () => {
@@ -94,6 +95,9 @@ const CesiumMapB = () => {
           },
         });
 
+        viewer.scene.screenSpaceCameraController.minimumZoomDistance = 50; // Minimum zoom level (higher value = less zoom-in)
+        viewer.scene.screenSpaceCameraController.maximumZoomDistance = 1000;
+
         const flyToLocationFromURL = () => {
           const urlParams = new URLSearchParams(window.location.search);
           const lat = urlParams.get("lat");
@@ -132,25 +136,25 @@ const CesiumMapB = () => {
         // };
         // await loadTerrain();
 
-        const loadTerrain = async () => {
-          try {
-            const terrainModel = await Model.fromGltfAsync({
-              url: "/models/fmap10.glb", // Loads from Next.js public folder
-              modelMatrix: Transforms.eastNorthUpToFixedFrame(
-                Cartesian3.fromDegrees(longitude, latitude, altitude)
-              ),
-              scale: 1.0,
-            });
+        // const loadTerrain = async () => {
+        //   try {
+        //     const terrainModel = await Model.fromGltfAsync({
+        //       url: "/models/fmap10.glb", // Loads from Next.js public folder
+        //       modelMatrix: Transforms.eastNorthUpToFixedFrame(
+        //         Cartesian3.fromDegrees(longitude, latitude, altitude)
+        //       ),
+        //       scale: 1.0,
+        //     });
 
-            viewer.scene.primitives.add(terrainModel);
-            console.log("Model loaded successfully", terrainModel);
-          } catch (error) {
-            console.error("Failed to load terrain model:", error);
-          }
-        };
+        //     viewer.scene.primitives.add(terrainModel);
+        //     console.log("Model loaded successfully", terrainModel);
+        //   } catch (error) {
+        //     console.error("Failed to load terrain model:", error);
+        //   }
+        // };
 
         // Call the function
-        await loadTerrain();
+        // await loadTerrain();
 
         loadNewBuildingTileset(viewer);
 
@@ -159,6 +163,13 @@ const CesiumMapB = () => {
         const loadAllRealShops = async () => {
           const load = await fetchOnlyShops();
           // Load 3D models and labels for each shop
+
+          // Check if the fetch was successful and if `shops` exists
+          if (!load.success || !Array.isArray(load.shops)) {
+            console.error("Failed to load shops:", load.message);
+            return; // Stop execution if fetching shops failed
+          }
+
           load.shops.forEach((shop) => {
             const { name, longitude, latitude, size, id, category } = shop;
             const longCenter = longitude;
@@ -176,6 +187,7 @@ const CesiumMapB = () => {
           });
           setShops(load.shops);
         };
+
         const placesLabel = await addPlacesToViewer(viewer);
         setLabelEntities(placesLabel);
         await loadAllRealShops();
@@ -234,7 +246,7 @@ const CesiumMapB = () => {
 
               if (selectedTile) {
                 selectedTile.rectangle.material = new ColorMaterialProperty(
-                  Color.GREEN.withAlpha(0.3)
+                  Color.GREEN.withAlpha(0.1)
                 );
                 console.log("there is a selscted tile o", selectedTile);
               } else {
@@ -298,7 +310,6 @@ const CesiumMapB = () => {
 
     initializeCesium();
   }, [viewer]);
-
   AddUserMarkerToMap();
   DisplayAllUserMarkers();
   ModelRelocation();
@@ -322,6 +333,9 @@ const CesiumMapB = () => {
           id="cesiumContainer"
           className="w-full h-screen overflow-hidden relative border "
         >
+          {/* {viewer && (
+            <TerrainPositioner viewer={viewer} modelUrl="/models/fmap10.glb" />
+          )} */}
           {/* search/other basr */}
           <MapFlyers
             labelsVisible={labelsVisible}
