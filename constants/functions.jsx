@@ -236,24 +236,10 @@ export const load3DModel = async (cesiumViewer, shopName, lon, lat, tileId) => {
   const position = Cartesian3.fromDegrees(lon, lat);
   const modelMatrix = Transforms.eastNorthUpToFixedFrame(position);
 
-  const model = await Model.fromGltfAsync({
-    url: "/shops/food_shop.glb", // Model file
-    modelMatrix: modelMatrix,
-    scale: 2,
-  });
-
-  // cesiumViewer.scene.primitives.add(model);
-
-  // Add shop label
-  // const entityToAdd = cesiumViewer.entities.getById(`tile-${tileId}`);
-  // if (entityToAdd) {
-  //   console.log("Dont worryy , entity is alreafy there");
-  //   return null;
-  // }
   console.log("ell entities =", cesiumViewer.entities);
   cesiumViewer.entities.add({
-    id: `tile-${tileId}`, // Unique ID for this tile
-    name: `Tile ${tileId}`,
+    id: `shop-${tileId}`, // Unique ID for this tile
+    name: `shop ${tileId}`,
     position: position, // Use the same position as the model
     properties: {
       type: "shop",
@@ -263,7 +249,7 @@ export const load3DModel = async (cesiumViewer, shopName, lon, lat, tileId) => {
       coordinates: { lon, lat }, // Store coordinates for reference
     },
     model: {
-      url: "/shops/food_shop.glb", // Model file
+      uri: "/shops/food_shop.glb", // Model file
       modelMatrix: modelMatrix,
       scale: 2,
     },
@@ -280,6 +266,7 @@ export const load3DModel = async (cesiumViewer, shopName, lon, lat, tileId) => {
       distanceDisplayCondition: new DistanceDisplayCondition(0.0, 400.0), // Display label within a certain distance
     },
   });
+  console.log("SHop 3d model addded");
 };
 
 export const load3DModelForShop = async (

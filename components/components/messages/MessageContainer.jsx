@@ -12,14 +12,21 @@ import { useOnlineUsers } from "@components/providers/OnlineUsersProvider";
 import { useEffect, useRef, useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const MessageContainer = () => {
   const { setSelectedConversation, selectedConversation } = useConversation();
+  const router = useRouter();
   const onlineUsers = useOnlineUsers();
   // console.log("Online users for COnversation", selectedConversation);
   const isUserActive = onlineUsers.find(
     (onlineUser) => onlineUser.userId === selectedConversation?.id
   );
+
+  const handleBack = () => {
+    setSelectedConversation(null);
+    router.back();
+  };
 
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
@@ -48,10 +55,7 @@ const MessageContainer = () => {
         <>
           {/* Header */}
           <div className="border-b px-4 py-2 mb-2 flex gap-3 items-center z-40">
-            <IoMdArrowBack
-              className="text-xl"
-              onClick={() => setSelectedConversation(null)}
-            />
+            <IoMdArrowBack className="text-xl" onClick={() => handleBack()} />
             <div className="w-10 h-10 border rounded-full relative">
               <Image
                 alt="profile"

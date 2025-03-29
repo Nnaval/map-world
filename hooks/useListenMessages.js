@@ -13,7 +13,7 @@ const useListenMessages = () => {
   useEffect(() => {
     socket.on("newMessage", async (newMessage) => {
       console.log("New message --------->>>>>>", newMessage);
-      toast("a new message was recieved");
+      // toast("a new message was recieved");
 
       const updatedMessages = [...messages, newMessage.message];
       setMessages(updatedMessages);

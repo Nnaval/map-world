@@ -1,6 +1,8 @@
 import { extractTime } from "@constants/functions";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { IoCheckmarkDoneSharp } from "react-icons/io5";
+import { MdDone } from "react-icons/md";
 import useConversation from "zustand/useConversation";
 
 const Message = ({ message }) => {
@@ -42,6 +44,11 @@ const Message = ({ message }) => {
             fromMe ? "justify-end" : "justify-start"
           } text-black`}
         >
+          {message.isRead ? (
+            <IoCheckmarkDoneSharp className="ml-1" />
+          ) : (
+            <MdDone className="ml-1" />
+          )}
           {extractTime(message.createdAt)}
         </span>
       </div>

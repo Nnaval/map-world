@@ -16,6 +16,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import { departments } from "@constants/arrays";
 import Modal from "@components/modals/Modal";
 import { useRouter } from "next/navigation";
+import { deleteDB } from "idb";
 
 const Profile = () => {
   const { data: session, status } = useSession();
@@ -56,11 +57,19 @@ const Profile = () => {
   }, []);
 
   const router = useRouter();
-  const handleSignOut = () => {
-    signOut();
-    // router.push("/");
-  };
+  const handleSignOut = async () => {
+    try {
+      // Clear IndexedDB
+      await deleteDB("chatDB");
+      console.log("IndexedDB cleared successfully.");
 
+      // Sign out and redirect
+      await signOut();
+      router.push("/login");
+    } catch (error) {
+      console.error("Error during sign out:", error);
+    }
+  };
   if (status === "loading") {
     // Show a loading spinner or placeholder while the session is loading
     return (

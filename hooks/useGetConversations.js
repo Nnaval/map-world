@@ -1,11 +1,14 @@
 import { getUsersForSidebar } from "@lib/actions/Chat.prisma";
 import { openDatabase } from "@lib/indexedDB";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const useGetConversations = () => {
   const [loading, setLoading] = useState(false);
   const [conversations, setConversations] = useState([]);
+  const { data: session } = useSession();
+  const userId = parseFloat(session?.user.id);
 
   // Load cached conversations
   const loadCachedConversations = async () => {
@@ -78,12 +81,14 @@ const useGetConversations = () => {
       if (navigator.onLine) {
         setLoading(true);
         try {
-          const fetchedConversations = await getUsersForSidebar();
-          console.log("Fetched conversations:", fetchedConversations);
+          if (session) {
+            const fetchedConversations = await getUsersForSidebar(userId);
+            console.log("Fetched conversations:", fetchedConversations);
 
-          if (fetchedConversations.length > 0) {
-            setConversations(fetchedConversations);
-            await saveConversationsToDB(fetchedConversations); // ✅ Only add new ones
+            if (fetchedConversations.length > 0) {
+              setConversations(fetchedConversations);
+              await saveConversationsToDB(fetchedConversations); // ✅ Only add new ones
+            }
           }
         } catch (error) {
           console.error("Error fetching conversations:", error);
@@ -95,7 +100,7 @@ const useGetConversations = () => {
     };
 
     getConversations();
-  }, []);
+  }, [session]);
 
   return { loading, conversations };
 };
