@@ -79,19 +79,21 @@ const Profile = () => {
     );
   }
 
-  // if (!session) {
-  //   // Handle unauthenticated state
-  //   return (
-  //     <div className="flex justify-center items-center h-screen">
-  //       <p className="text-xl text-red-500">
-  //         You must be logged in to view this page.
-  //       </p>
-  //       <Link href="/login" className="btn btn-primary ml-2">
-  //         Sign In
-  //       </Link>
-  //     </div>
-  //   );
-  // }
+  if (!session) {
+    // Handle unauthenticated state
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-xl">You must be logged in to view this page.</p>
+        <Link
+          href="/login"
+          className="bg-primary text-white rounded-xl p-1 ml-2"
+        >
+          Sign In
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-6 mb-10 flex flex-col items-center">
       <div className="flex fixed top-5 right-5 ">

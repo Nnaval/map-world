@@ -76,7 +76,7 @@ const useGetConversations = () => {
     const getConversations = async () => {
       await openDatabase(); // Ensure DB is initialized
 
-      const cachedConversations = await loadCachedConversations(); // Load cached data first
+      // const cachedConversations = await loadCachedConversations(); // Load cached data first
 
       if (navigator.onLine) {
         setLoading(true);

@@ -25,7 +25,7 @@ const Conversation = ({ conversation, emoji }) => {
   const handleOpenDM = async (conversation) => {
     console.log("CONVERSATIO", conversation);
     router.push(`/chat?receiverId=${conversation?.id}`);
-    setSelectedConversation(conversation);
+    // setSelectedConversation(conversation);
     markMessagesAsRead(
       conversation.conversationId,
       parseFloat(session?.user.id)

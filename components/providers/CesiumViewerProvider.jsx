@@ -17,7 +17,7 @@ export const useCesiumViewer = () => useContext(CesiumViewerContext);
 export const CesiumViewerProvider = ({ children }) => {
   const viewerRef = useRef(null);
   const [viewerReady, setViewerReady] = useState(false);
-  const [isMapVisible, setMapVisible] = useState(true); // Add map visibility state
+  const [isMapVisible, setMapVisible] = useState(false); // Add map visibility state
 
   useEffect(() => {
     const initializeViewer = async () => {

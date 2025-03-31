@@ -14,7 +14,6 @@ const useGetMessages = () => {
     const getMessages = async () => {
       if (!selectedConversation) return;
       setLoading(true);
-      setMessages([]);
 
       try {
         // Step 1: Check IndexedDB first
@@ -50,7 +49,7 @@ const useGetMessages = () => {
     };
 
     getMessages();
-  }, [selectedConversation, setMessages]);
+  }, [selectedConversation]);
 
   return { messages, loading };
 };
