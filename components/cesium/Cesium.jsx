@@ -11,6 +11,8 @@ import {
   JulianDate,
   Model,
   Transforms,
+  Matrix4,
+  HeadingPitchRoll,
 } from "cesium";
 
 import "cesium/Build/Cesium/Widgets/widgets.css";
@@ -136,25 +138,51 @@ const CesiumMapB = () => {
         // };
         // await loadTerrain();
 
-        // const loadTerrain = async () => {
-        //   try {
-        //     const terrainModel = await Model.fromGltfAsync({
-        //       url: "/models/fmap10.glb", // Loads from Next.js public folder
-        //       modelMatrix: Transforms.eastNorthUpToFixedFrame(
-        //         Cartesian3.fromDegrees(longitude, latitude, altitude)
-        //       ),
-        //       scale: 1.0,
-        //     });
+        const loadTerrain = async () => {
+          try {
+            const modelUrl = "/models/fmap10.glb"; // Ensure this path is correct
 
-        //     viewer.scene.primitives.add(terrainModel);
-        //     console.log("Model loaded successfully", terrainModel);
-        //   } catch (error) {
-        //     console.error("Failed to load terrain model:", error);
-        //   }
-        // };
+            // Define model properties
+            const longitude = 6.9955297993;
+            const latitude = 5.3823293861;
+            const height = 0;
+            const heading = 90; // Adjust to rotate the model
+            const pitch = 0;
+            const roll = 0;
+            const scale = 1.4;
+
+            // Convert position & rotation
+            const position = Cartesian3.fromDegrees(
+              longitude,
+              latitude,
+              height
+            );
+            const hpr = HeadingPitchRoll.fromDegrees(heading, pitch, roll);
+            const rotation = Transforms.headingPitchRollQuaternion(
+              position,
+              hpr
+            );
+
+            // Check if model already exists, update it; otherwise, create a new one
+
+            viewer.entities.add({
+              position: position,
+              orientation: rotation,
+              model: {
+                uri: modelUrl,
+                scale: scale,
+                minimumPixelSize: 128,
+              },
+            });
+
+            console.log("Model loaded successfully");
+          } catch (error) {
+            console.error("Failed to load terrain model:", error);
+          }
+        };
 
         // Call the function
-        // await loadTerrain();
+        await loadTerrain();
 
         loadNewBuildingTileset(viewer);
 
